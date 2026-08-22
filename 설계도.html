@@ -90,7 +90,11 @@ button{background:none;border:none;cursor:pointer}
 .raillab small{display:block;font-size:9px;font-weight:400;opacity:.7;letter-spacing:0}
 .raillab.store{color:var(--q)}
 .scroller{position:absolute;inset:0;top:52px;overflow:auto}
-.canvas{position:relative;min-width:100%;min-height:100%}
+.canvas{
+  position:relative;min-width:100%;min-height:100%;
+  user-select:none;-webkit-user-select:none;-ms-user-select:none;
+}
+.rail,.bands,.bandlab,.raillab{user-select:none;-webkit-user-select:none}
 .bands{position:absolute;inset:0;pointer-events:none}
 .band{position:absolute;left:0;right:0;border-bottom:1px dashed var(--line);transition:background .15s}
 .band.odd{background:var(--band)}
@@ -264,8 +268,32 @@ button{background:none;border:none;cursor:pointer}
 }
 .hint.on{opacity:1;transform:translate(-50%,0)}
 .hint b{font-weight:600}
+/* 범위 선택 네모 */
+.marquee{
+  position:absolute;z-index:25;pointer-events:none;
+  border:1.5px dashed var(--focus);border-radius:6px;
+  background:color-mix(in srgb,var(--focus) 13%,transparent);
+}
+/* 선택 배지 */
+.selbar{
+  position:fixed;left:50%;bottom:14px;transform:translate(-50%,10px);z-index:28;
+  display:flex;align-items:center;gap:7px;opacity:0;pointer-events:none;transition:.16s;
+  background:var(--ink);color:var(--paper);padding:7px 9px 7px 15px;border-radius:11px;
+  box-shadow:0 10px 30px -12px rgba(0,0,0,.6);font-size:12.5px;white-space:nowrap;
+}
+.selbar.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.selbar .scount{font-weight:600}
+.selbar .hintk{opacity:.55;font-size:11px;font-family:"IBM Plex Mono",monospace}
+.selbar .sbtn2{
+  font-size:12px;padding:4px 11px;border-radius:7px;
+  border:1px solid rgba(255,255,255,.28);color:inherit;transition:.14s;
+}
+.selbar .sbtn2:hover{background:rgba(255,255,255,.15)}
+.selbar .sbtn2.dan{border-color:rgba(255,150,170,.55);color:#FFB4C4}
+.selbar .sbtn2.dan:hover{background:rgba(255,120,150,.22)}
+
 .toast{
-  position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);z-index:70;
+  position:fixed;left:50%;bottom:66px;transform:translate(-50%,12px);z-index:70;
   background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:9px;font-size:13px;
   opacity:0;pointer-events:none;transition:.22s;box-shadow:0 10px 30px -12px rgba(0,0,0,.6);max-width:92vw;
 }
@@ -383,9 +411,12 @@ button{background:none;border:none;cursor:pointer}
   아래 <b>동그라미(●)</b>를 끌어 다른 네모에 놓으면 이어집니다 (<b>위·아래 아무 방향</b>) ·
   또는 두 네모를 <b>Shift+클릭</b> — 안 이어져 있으면 <b>잇고</b>, 이어져 있으면 <b>끊습니다</b> ·
   <b>선에 마우스를 올리면 ✕</b> 가 뜹니다. 누르면 끊깁니다 ·
-  <b>이름</b>이나 <b>⋯</b> 를 누르면 내용 고치기 (정해진 것 · 아직 안 정한 것) · <b>Ctrl+Z</b> 되돌리기
+  <b>이름</b>이나 <b>⋯</b> 를 누르면 내용 고치기 · <b>Ctrl+Z</b> 되돌리기<br>
+  <b>빈 곳을 끌면</b> 범위 선택 · <b>Ctrl+클릭</b> 하나씩 추가 · <b>Ctrl+A</b> 전체 ·
+  <b>Delete</b> 선택한 것 지우기 (아래 붙은 건 남고 선만 끊깁니다)
 </div>
 
+<div class="selbar" id="selbar"></div>
 <div class="hint" id="hint"></div>
 <div class="toast" id="toast"></div>
 
@@ -437,7 +468,19 @@ function lvClass(lv){
   return "lv"+lv;
 }
 
-var DOC=null, sel=null, openId=null, UNDO=[], nodeEls={};
+var DOC=null, SEL={}, openId=null, UNDO=[], nodeEls={};
+
+function selIds(){var a=[];for(var k in SEL)if(SEL[k])a.push(k);return a}
+function selCount(){return selIds().length}
+function selOne(){var a=selIds();return a.length===1?a[0]:null}
+function pruneSel(){
+  var ok={};DOC.nodes.forEach(function(n){ok[n.id]=1});
+  for(var k in SEL)if(!ok[k])delete SEL[k];
+}
+function afterSel(){applyFocus();drawSelBar()}
+function setSel(id){SEL={};if(id)SEL[id]=true;afterSel()}
+function toggleSel(id){if(SEL[id])delete SEL[id];else SEL[id]=true;afterSel()}
+function clearSel(){SEL={};afterSel()}
 
 function uid(){return "n"+Math.random().toString(36).slice(2,9)}
 
@@ -469,7 +512,9 @@ function seed(){
   add("선 끊기","done","선 위 ✕ 를 누르거나, 두 네모를 Shift+클릭. 상세에서 붙은 선 전부 끊기도 됨.",[],[],a1.id,2);
   add("자동 정리","done","흐트러진 배치를 한 방에 반듯하게.",[],[],a1.id,2);
   add("접기·펴기","done","아래 것들 숨기기.",[],[],a1.id,2);
-  add("가지 강조","done","고른 네모와 이어진 것만 진하게.",[],[],a1.id,2);
+  add("가지 강조","done","네모 하나를 고르면 이어진 것만 진하게.",[],[],a1.id,2);
+  add("범위 선택","done","빈 곳을 끌면 닿은 네모들이 선택됨. Ctrl+클릭 추가, Ctrl+A 전체.",[],[],a1.id,2);
+  add("여러 개 지우기·옮기기","done","Delete 로 고른 것만 지움(아래는 남고 선만 끊김). 같이 옮기기는 같은 층 안에서만.",[],[],a1.id,2);
   add("보관함","done","아직 자리 못 정한 것을 던져두는 맨 아래 띠.",[],[],a1.id,2);
 
   var a2=add("내용 채우기","doing","각 네모에 무엇을 담을지.",
@@ -626,7 +671,7 @@ function doUndo(){
   if(!UNDO.length){toast("되돌릴 게 없습니다.");return}
   try{
     DOC=JSON.parse(UNDO.pop());
-    sel=null;closePanel();draw();syncUndo();toast("되돌렸습니다.");
+    SEL={};closePanel();draw();syncUndo();toast("되돌렸습니다.");
   }catch(e){toast("되돌리지 못했습니다.")}
 }
 
@@ -716,8 +761,11 @@ function draw(){
     nodeEls[n.id]=el;
   });
 
+  clearMarquees();
   drawLinks();
+  pruneSel();
   applyFocus();
+  drawSelBar();
   drawRail();
   var t=document.getElementById("docTitle");
   if(document.activeElement!==t)t.value=DOC.title;
@@ -833,7 +881,8 @@ function nodeEl(n){
   el.addEventListener("click",function(e){
     if(justDragged)return;
     if(e.shiftKey){shiftConnect(n.id);return}
-    sel=(sel===n.id)?null:n.id;applyFocus();
+    if(e.ctrlKey||e.metaKey){toggleSel(n.id);return}
+    setSel((SEL[n.id]&&selCount()===1)?null:n.id);
   });
   return el;
 }
@@ -917,25 +966,81 @@ function drawLinks(){
 
 function applyFocus(){
   var paths=linksEl.querySelectorAll("path.wire");
-  if(!sel||!N(sel)){
+  var i,one=selOne();
+  /* 아무것도 안 골랐을 때 */
+  if(!selCount()){
     DOC.nodes.forEach(function(n){
       var e=nodeEls[n.id];if(e)e.classList.remove("dim","sel");
     });
-    for(var i=0;i<paths.length;i++)paths[i].classList.remove("lit");
+    for(i=0;i<paths.length;i++)paths[i].classList.remove("lit");
     return;
   }
-  var keep={};keep[sel]=1;
-  ancestors(sel).forEach(function(a){keep[a.id]=1});
-  descendants(sel).forEach(function(d){keep[d.id]=1});
+  /* 여러 개 : 흐리게 하지 않고 테두리만 */
+  if(!one||!N(one)){
+    DOC.nodes.forEach(function(n){
+      var e=nodeEls[n.id];if(!e)return;
+      e.classList.remove("dim");
+      if(SEL[n.id])e.classList.add("sel");else e.classList.remove("sel");
+    });
+    for(i=0;i<paths.length;i++)paths[i].classList.remove("lit");
+    return;
+  }
+  /* 하나 : 가지 강조 */
+  var keep={};keep[one]=1;
+  ancestors(one).forEach(function(a){keep[a.id]=1});
+  descendants(one).forEach(function(d){keep[d.id]=1});
   DOC.nodes.forEach(function(n){
     var e=nodeEls[n.id];if(!e)return;
     if(keep[n.id])e.classList.remove("dim");else e.classList.add("dim");
-    if(n.id===sel)e.classList.add("sel");else e.classList.remove("sel");
+    if(n.id===one)e.classList.add("sel");else e.classList.remove("sel");
   });
   for(var j=0;j<paths.length;j++){
-    var p=paths[j];
-    if(keep[p.dataset.a]&&keep[p.dataset.b])p.classList.add("lit");else p.classList.remove("lit");
+    var pw=paths[j];
+    if(keep[pw.dataset.a]&&keep[pw.dataset.b])pw.classList.add("lit");else pw.classList.remove("lit");
   }
+}
+
+/* 선택 배지 */
+function drawSelBar(){
+  var b=document.getElementById("selbar");
+  if(!b)return;
+  var c=selCount();
+  if(!c){b.classList.remove("on");b.innerHTML="";return}
+  b.innerHTML="";
+  var t=document.createElement("span");
+  t.className="scount";t.textContent=c+"개 선택됨";
+  b.appendChild(t);
+  var k=document.createElement("span");
+  k.className="hintk";k.textContent="Delete";
+  b.appendChild(k);
+  var d=document.createElement("button");
+  d.className="sbtn2 dan";d.textContent="지우기";
+  d.addEventListener("click",deleteSelected);
+  b.appendChild(d);
+  var x=document.createElement("button");
+  x.className="sbtn2";x.textContent="해제";
+  x.addEventListener("click",clearSel);
+  b.appendChild(x);
+  b.classList.add("on");
+}
+
+/* 선택한 것 지우기 : 고른 네모만. 아래 붙은 건 남고 선만 끊긴다 */
+function deleteSelected(){
+  var ids=selIds();
+  if(!ids.length){toast("선택된 네모가 없습니다.");return}
+  var names=ids.slice(0,3).map(function(i){var n=N(i);return n?"“"+n.name+"”":""}).join(", ");
+  if(ids.length>3)names+=" 외 "+(ids.length-3)+"개";
+  ask({title:"네모 "+ids.length+"개 지우기",
+    desc:names+" 를 지웁니다. 아래에 붙어 있던 것들은 남고, 선만 끊어집니다.",
+    ok:"지우기",danger:true,
+    run:function(){
+      pushUndo();
+      var kill={};ids.forEach(function(i){kill[i]=1});
+      DOC.nodes.forEach(function(n){if(n.parent&&kill[n.parent])n.parent=null});
+      DOC.nodes=DOC.nodes.filter(function(n){return !kill[n.id]});
+      SEL={};closePanel();draw();
+      toast("네모 "+ids.length+"개를 지웠습니다. (Ctrl+Z 로 되돌리기)");
+    }});
 }
 
 function morph(id){
@@ -965,11 +1070,22 @@ function onDown(e){
   var el=e.currentTarget;
   var id=el.dataset.id, n=N(id);
   if(!n)return;
+  if(mq)mqCancel();
+  clearMarquees();
   var r=canvas.getBoundingClientRect();
   drag={id:id,el:el,
     dx:e.clientX-r.left-n.x, dy:e.clientY-r.top-n.y,
     moved:false, startX:n.x, startY:n.y, startLv:n.lv, startParent:n.parent,
-    snap:JSON.stringify(DOC), hoverId:null};
+    snap:JSON.stringify(DOC), hoverId:null, group:null};
+  if(SEL[id]&&selCount()>1){
+    drag.group=[];
+    selIds().forEach(function(k){
+      if(k===id)return;
+      var m=N(k);if(!m||hidden(m))return;
+      drag.group.push({id:k,x:m.x,y:m.y,lv:m.lv});
+    });
+    if(!drag.group.length)drag.group=null;
+  }
   document.addEventListener("pointermove",onMove);
   document.addEventListener("pointerup",onUp);
   document.addEventListener("pointercancel",onUp);
@@ -986,6 +1102,33 @@ function onMove(e){
     drag.el.classList.add("drag");
   }
   var n=N(drag.id);
+
+  /* 여러 개 같이 옮기기 : 같은 층 안에서만 */
+  if(drag.group){
+    var dx2=x-drag.startX, dyRaw=y-drag.startY;
+    var lo=-1e9, hi=1e9;
+    var all=[{y:drag.startY,lv:drag.startLv}];
+    drag.group.forEach(function(g){all.push({y:g.y,lv:g.lv})});
+    all.forEach(function(g){
+      var topY=bandTop(g.lv)+8, botY=bandTop(g.lv)+BAND_H-76;
+      if(g.lv===0){topY=bandTop(maxLv()+1)+8;botY=bandTop(maxLv()+1)+BAND_H-76}
+      lo=Math.max(lo,topY-g.y);
+      hi=Math.min(hi,botY-g.y);
+    });
+    var dy2=Math.max(lo,Math.min(hi,dyRaw));
+    n.x=Math.max(RAIL+10,drag.startX+dx2);n.y=drag.startY+dy2;
+    drag.el.style.left=n.x+"px";drag.el.style.top=n.y+"px";
+    drag.group.forEach(function(g){
+      var m=N(g.id);if(!m)return;
+      m.x=Math.max(RAIL+10,g.x+dx2);m.y=g.y+dy2;
+      var e2=nodeEls[g.id];
+      if(e2){e2.style.left=m.x+"px";e2.style.top=m.y+"px"}
+    });
+    scheduleLinks();
+    hint("<b>"+(drag.group.length+1)+"개</b>를 같이 옮깁니다 — 여러 개는 <b>같은 층 안에서만</b> 움직입니다");
+    return;
+  }
+
   n.x=x;n.y=y;
   drag.el.style.left=x+"px";
   drag.el.style.top=y+"px";
@@ -1036,6 +1179,12 @@ function onUp(){
   }
   justDragged=true;setTimeout(function(){justDragged=false},140);
   pushUndo(d.snap);
+
+  if(d.group){
+    draw();
+    toast("네모 "+(d.group.length+1)+"개를 옮겼습니다. (Ctrl+Z)");
+    return;
+  }
 
   var lv=lvFromY(n.y+26);
   if(lv===d.startLv){
@@ -1139,23 +1288,24 @@ function connect(aId,bId){
 
 /* Shift + 클릭 : 안 이어져 있으면 잇고, 이어져 있으면 끊는다 */
 function shiftConnect(id){
-  if(!sel||sel===id){
-    sel=id;applyFocus();
+  var one=selOne();
+  if(!one||one===id){
+    setSel(id);
     toast("이을(끊을) 상대를 Shift+클릭 하세요.");
     return;
   }
-  var a=N(sel), b=N(id);
-  if(!a||!b){sel=null;applyFocus();return}
+  var a=N(one), b=N(id);
+  if(!a||!b){clearSel();return}
   var linked=(a.parent===b.id)?a:((b.parent===a.id)?b:null);
   if(linked){
     var pn=N(linked.parent);
     pushUndo();linked.parent=null;
-    sel=null;draw();
+    SEL={};draw();
     toast("“"+(pn?pn.name:"")+"” ─ “"+linked.name+"” 선을 끊었습니다. (Ctrl+Z)");
     return;
   }
-  connect(sel,id);
-  sel=null;applyFocus();
+  connect(one,id);
+  clearSel();
 }
 
 /* 고른 네모에 붙은 선 전부 끊기 */
@@ -1177,7 +1327,7 @@ var panel=document.getElementById("panel"), scrim=document.getElementById("scrim
 
 function openPanel(id){
   var n=N(id);if(!n)return;
-  openId=id;sel=id;applyFocus();
+  openId=id;setSel(id);
   document.getElementById("ppath").textContent=pathText(id);
   var nameIn=document.getElementById("fName");
   nameIn.value=n.name;
@@ -1253,16 +1403,7 @@ function openPanel(id){
   var b3=document.createElement("button");
   b3.className="btn dan";b3.textContent="지우기";
   b3.addEventListener("click",function(){
-    ask({title:"이 네모 지우기",
-      desc:"“"+n.name+"” 과(와) 그 아래 모든 것을 지웁니다.",
-      ok:"지우기",danger:true,
-      run:function(){
-        pushUndo();
-        var kill={};kill[n.id]=1;
-        descendants(n.id).forEach(function(d){kill[d.id]=1});
-        DOC.nodes=DOC.nodes.filter(function(z){return !kill[z.id]});
-        sel=null;closePanel();draw();toast("지웠습니다. (Ctrl+Z)");
-      }});
+    setSel(id);deleteSelected();
   });
   f.appendChild(b3);
 
@@ -1450,7 +1591,7 @@ document.getElementById("btnImport").addEventListener("click",function(){
         if(d&&d.nodes)nd=d;
         else if(d&&d.kids)nd=migrate(d);
         if(!nd)throw 0;
-        pushUndo();DOC=nd;sel=null;closePanel();draw();toast("불러왔습니다.");
+        pushUndo();DOC=nd;SEL={};closePanel();draw();toast("불러왔습니다.");
       }catch(e){toast("백업 글이 아닌 것 같습니다. 다시 확인해주세요.")}
     }});
 });
@@ -1458,7 +1599,7 @@ document.getElementById("btnReset").addEventListener("click",function(){
   ask({title:"처음으로 되돌리기",
     desc:"지금까지 적은 내용을 전부 지우고 처음 상태로 되돌립니다. 먼저 [백업 복사]를 해두세요.",
     ok:"전부 지우고 되돌리기",danger:true,
-    run:function(){pushUndo();seed();sel=null;closePanel();draw();toast("처음으로 되돌렸습니다.")}});
+    run:function(){pushUndo();seed();SEL={};closePanel();draw();toast("처음으로 되돌렸습니다.")}});
 });
 document.getElementById("docTitle").addEventListener("focus",function(){pushUndo()});
 document.getElementById("docTitle").addEventListener("input",function(e){
@@ -1466,22 +1607,108 @@ document.getElementById("docTitle").addEventListener("input",function(e){
 });
 
 document.addEventListener("keydown",function(e){
+  var t=e.target.tagName;
+  var typing=(t==="INPUT"||t==="TEXTAREA");
   if((e.ctrlKey||e.metaKey)&&(e.key==="z"||e.key==="Z")){
-    var t=e.target.tagName;
-    if(t==="INPUT"||t==="TEXTAREA")return;
+    if(typing)return;
     e.preventDefault();doUndo();return;
+  }
+  if((e.ctrlKey||e.metaKey)&&(e.key==="a"||e.key==="A")){
+    if(typing)return;
+    e.preventDefault();
+    SEL={};
+    DOC.nodes.forEach(function(n){if(!hidden(n))SEL[n.id]=true});
+    afterSel();
+    toast(selCount()+"개 전부 선택했습니다.");
+    return;
+  }
+  if(e.key==="Delete"||e.key==="Backspace"){
+    if(typing)return;
+    if(document.getElementById("modal").classList.contains("on"))return;
+    if(!selCount())return;
+    e.preventDefault();deleteSelected();return;
   }
   if(e.key==="Escape"){
     if(document.getElementById("modal").classList.contains("on")){askClose();return}
     if(panel.classList.contains("on")){closePanel();return}
-    if(sel){sel=null;applyFocus()}
+    if(selCount())clearSel();
   }
 });
 scroller.addEventListener("scroll",syncRail);
-scroller.addEventListener("click",function(e){
-  if(e.target.closest(".node"))return;
-  if(sel){sel=null;applyFocus()}
+
+/* ---------- 빈 곳을 끌면 범위 선택 ---------- */
+var mq=null;
+/* 혹시 남아 있는 선택 네모를 싹 치운다 */
+function clearMarquees(){
+  var olds=canvas.querySelectorAll(".marquee");
+  for(var i=0;i<olds.length;i++){
+    if(olds[i].parentNode)olds[i].parentNode.removeChild(olds[i]);
+  }
+}
+function mqDetach(){
+  document.removeEventListener("pointermove",mqMove);
+  document.removeEventListener("pointerup",mqUp);
+  document.removeEventListener("pointercancel",mqCancel);
+  window.removeEventListener("blur",mqCancel);
+}
+function mqCancel(){
+  if(!mq)return;
+  mq=null;
+  mqDetach();
+  clearMarquees();
+}
+canvas.addEventListener("pointerdown",function(e){
+  if(e.target.closest(".node")||e.target.closest(".handle"))return;
+  if(e.target.tagName==="path"||e.target.tagName==="circle"||e.target.tagName==="line")return;
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  e.preventDefault();
+  if(mq)mqCancel();
+  clearMarquees();
+  var r=canvas.getBoundingClientRect();
+  mq={x0:e.clientX-r.left, y0:e.clientY-r.top, moved:false, base:{}, el:null, pid:e.pointerId};
+  if(e.ctrlKey||e.metaKey){for(var k in SEL)mq.base[k]=true}
+  try{canvas.setPointerCapture(e.pointerId)}catch(err){}
+  document.addEventListener("pointermove",mqMove);
+  document.addEventListener("pointerup",mqUp);
+  document.addEventListener("pointercancel",mqCancel);
+  window.addEventListener("blur",mqCancel);
 });
+function mqMove(e){
+  if(!mq)return;
+  var r=canvas.getBoundingClientRect();
+  var x=e.clientX-r.left, y=e.clientY-r.top;
+  if(!mq.moved){
+    if(Math.abs(x-mq.x0)<4&&Math.abs(y-mq.y0)<4)return;
+    mq.moved=true;
+    mq.el=document.createElement("div");
+    mq.el.className="marquee";
+    canvas.appendChild(mq.el);
+  }
+  var L=Math.min(x,mq.x0), T=Math.min(y,mq.y0);
+  var W=Math.abs(x-mq.x0), H=Math.abs(y-mq.y0);
+  mq.el.style.left=L+"px";mq.el.style.top=T+"px";
+  mq.el.style.width=W+"px";mq.el.style.height=H+"px";
+  SEL={};
+  for(var k in mq.base)SEL[k]=true;
+  DOC.nodes.forEach(function(n){
+    if(hidden(n))return;
+    var el=nodeEls[n.id];if(!el)return;
+    var w=NW(n.lv), h=el.offsetHeight;
+    if(n.x<L+W && n.x+w>L && n.y<T+H && n.y+h>T)SEL[n.id]=true;
+  });
+  afterSel();
+}
+function mqUp(){
+  if(!mq)return;
+  var m=mq;mq=null;
+  mqDetach();
+  try{canvas.releasePointerCapture(m.pid)}catch(err){}
+  clearMarquees();
+  if(!m.moved){clearSel();return}
+  var c=selCount();
+  if(c)toast(c+"개 선택했습니다 — Delete 로 지우거나 끌어서 같이 옮기세요.");
+  else clearSel();
+}
 var rsz=null;
 window.addEventListener("resize",function(){
   clearTimeout(rsz);rsz=setTimeout(draw,120);
