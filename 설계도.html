@@ -8,689 +8,741 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* =========================================================================
-   상상을 현실로 — 두 번째 판
+/* ===========================================================================
+   상상을 현실로 — 세 번째 판
 
-   왜 다시 만들었나 (CLAUDE.md 기준):
-     원칙 15 는 "이 제품을 Infinite canvas 로 축소하지 말 것"을 금지 목록에 넣어뒀는데
-     첫 판이 정확히 그것이었다. 네모 37개에 가로 6,948px — 열면 큰 그림이 하나도 안 보였다.
-     구조가 커질수록 조망이 나빠지는 구조는 North Star 의 정반대다.
+   본질(재우 정리, 2026-08-26):
+     아이디어를 눈에 보이는 구조로 정리하고, 그 구조를 보면서 생각하고,
+     전체를 조망하면서 현실화해간다.
+     구조화 자체가 생각하는 과정의 일부다.
 
-   그래서 이 판의 규칙은 셋이다.
-     1. 가로 스크롤이 없다. 무엇을 보든 한 화면에 들어온다.
-     2. 배치를 사람이 하지 않는다. 끌어다 놓는 건 그림 그리기지 생각 정리가 아니다.
-     3. 「아직 모르는 것」이 화면에서 사라지지 않는다. 미정은 오류가 아니다(원칙 11).
-   ========================================================================= */
+   그래서 이 판이 지키는 것 셋:
+     1. 모드가 없다.
+        「본다 → 생각한다 → 바꾼다 → 다시 본다」가 한 덩어리다.
+        보고 있는 그 줄을 그 자리에서 고친다. 편집 창을 따로 열지 않는다.
+     2. 바꾸는 데 벌칙이 없다.
+        옮겨도 아무것도 끊기지 않는다. 아래 달린 것은 따라온다.
+        (첫 판은 층을 옮기면 이어둔 선이 전부 끊겨서, 생각을 바꾸는 행동에 벌칙을 줬다)
+     3. 전체가 사라지지 않는다.
+        들어갔다 나오는 게 아니라 제자리에서 펼쳐진다.
+        그래서 「이 부분이 전체에서 어디인지」를 따로 알려줄 필요가 없다.
+   =========================================================================== */
 
 :root{
-  --paper:#FAFAF8;  --card:#FFFFFF;  --sunk:#F1F1EE;
-  --ink:#1A1C1A;    --ink2:#5C6159;  --ink3:#8B9089;
-  --line:#E3E4DF;   --line2:#CFD1CA;
-  /* 상태색 — 첫 판에서 그대로 가져왔다. 재우가 이미 눈에 익힌 색이다 */
-  --s-idea:#8FA88A;  --s-set:#5E86C4;  --s-doing:#D08A2C;  --s-done:#2F8F4E;
-  --q:#C0553F;                       /* 아직 모르는 것 */
-  --ai:#7B62C4;                      /* AI가 제안한 것 */
-  --sh:0 1px 2px rgba(20,28,22,.05), 0 8px 20px -14px rgba(20,28,22,.25);
+  --paper:#FBFAF7; --card:#FFFFFF; --sunk:#F2F1EC;
+  --ink:#191B18; --ink2:#5A5F57; --ink3:#8D9188; --ink4:#B4B8AF;
+  --line:#E5E4DD; --line2:#D0D0C7;
+  --think:#B08A3E;   /* 💭 아직 생각 중 */
+  --set:#4B7BB5;     /* ✓ 정했음 */
+  --made:#2E8A50;    /* ■ 만들어짐 */
+  --focus:#F5F3E9;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{
   background:var(--paper); color:var(--ink);
   font-family:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
-  font-size:14px; line-height:1.55;
-  overflow:hidden;                   /* 가로 스크롤 금지는 이 제품의 기능이다 */
+  font-size:14px; line-height:1.5; overflow:hidden;
 }
-button{font:inherit;color:inherit;cursor:pointer}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 input,textarea{font:inherit;color:inherit}
-
-/* ---------- 공통 부품 ---------- */
-.btn{
-  border:1px solid var(--line2); background:var(--card); border-radius:8px;
-  padding:7px 13px; font-size:13px; font-weight:500; white-space:nowrap;
-  transition:background .12s, border-color .12s;
-}
-.btn:hover{background:var(--sunk)}
-.btn.pri{background:var(--ink); color:#fff; border-color:var(--ink)}
-.btn.pri:hover{background:#000}
-.btn.ghost{border-color:transparent; background:transparent; color:var(--ink2)}
-.btn.ghost:hover{background:var(--sunk); color:var(--ink)}
-.btn.sm{padding:4px 9px; font-size:12px; border-radius:6px}
-
-.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--c,var(--line2))}
-.st-idea{--c:var(--s-idea)} .st-set{--c:var(--s-set)}
-.st-doing{--c:var(--s-doing)} .st-done{--c:var(--s-done)}
-
 .hidden{display:none !important}
 
-/* ---------- 화면 전환 ---------- */
+.btn{
+  border:1px solid var(--line2);background:var(--card);border-radius:8px;
+  padding:6px 12px;font-size:12.5px;font-weight:500;white-space:nowrap;
+}
+.btn:hover{background:var(--sunk)}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink2)}
+.btn.ghost:hover{background:var(--sunk);color:var(--ink)}
+.btn.sm{padding:3px 8px;font-size:12px;border-radius:6px}
+
 .screen{position:fixed;inset:0;display:none;flex-direction:column}
-body[data-at="home"] #home{display:flex}
-body[data-at="proj"] #proj{display:flex}
-body[data-at="idea"] #idea{display:flex}
+body[data-at="list"] #list{display:flex}
+body[data-at="work"] #work{display:flex}
 
-/* =========================  집 화면  ========================= */
-#home{overflow-y:auto; overflow-x:hidden}
-.hwrap{width:min(920px,92vw); margin:0 auto; padding:52px 0 80px}
-.htitle{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px}
-.hsub{color:var(--ink3);font-size:13px;margin:0 0 30px}
-
-.jot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 16px 12px;box-shadow:var(--sh)}
-.jot h3{margin:0 0 10px;font-size:14px;font-weight:600}
+/* =============================== 목록 =============================== */
+#list{overflow-y:auto}
+.lwrap{width:min(760px,92vw);margin:0 auto;padding:56px 0 90px}
+.ltitle{font-size:25px;font-weight:700;letter-spacing:-.02em;margin:0 0 5px}
+.lsub{color:var(--ink3);font-size:13px;margin:0 0 32px}
+.jot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.jot h3{margin:0 0 4px;font-size:14px;font-weight:600}
+.jot p{margin:0 0 11px;color:var(--ink3);font-size:12px}
 .jot textarea{
-  width:100%;min-height:74px;resize:vertical;border:1px solid var(--line);
-  border-radius:9px;padding:11px 12px;background:var(--paper);outline:none;
+  width:100%;min-height:110px;resize:vertical;border:1px solid var(--line);
+  border-radius:9px;padding:11px 12px;background:var(--paper);outline:none;line-height:1.7;
 }
 .jot textarea:focus{border-color:var(--line2);background:#fff}
-.jotfoot{display:flex;align-items:center;gap:10px;margin-top:9px}
-.jotfoot .tip{color:var(--ink3);font-size:12px;flex:1}
+.jotfoot{display:flex;align-items:center;gap:10px;margin-top:10px}
+.jotfoot .tip{flex:1;color:var(--ink3);font-size:11.5px}
 
-.sect{margin-top:34px}
-.sect h3{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:13px;font-weight:600;color:var(--ink2)}
-.sect h3 .n{color:var(--ink3);font-weight:400}
-.sect h3 .sp{flex:1}
-
-.empty{border:1px dashed var(--line2);border-radius:12px;padding:26px;text-align:center;color:var(--ink3);font-size:13px}
-
-.cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(232px,1fr))}
-.pwrap{position:relative}
-.pcard{
-  text-align:left;background:var(--card);border:1px solid var(--line);
-  border-left:3px solid var(--c,var(--line2));border-radius:11px;padding:13px 14px;
-  box-shadow:var(--sh);transition:transform .1s, border-color .12s;width:100%;
+.lsect{margin-top:36px}
+.lsect h4{display:flex;align-items:center;gap:8px;margin:0 0 11px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.lsect h4 .sp{flex:1}
+.pj{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  background:var(--card);border:1px solid var(--line);border-radius:11px;
+  padding:13px 15px;margin-bottom:8px;
 }
-.pcard:hover{transform:translateY(-1px);border-color:var(--line2)}
-.pcard .nm{font-weight:600;font-size:14px;margin-bottom:3px;padding-right:22px}
-.pcard .de{color:var(--ink3);font-size:12px;line-height:1.5;min-height:18px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-/* 원칙 4 — 카드에 다섯 가지를 늘어놓던 것을 둘로 줄였다. More information ≠ Better UI */
-.pcard .mt{display:flex;align-items:center;gap:9px;margin-top:9px;font-size:12px;color:var(--ink3)}
-.pcard .qn{color:var(--q);font-weight:600}
-.pmore{position:absolute;top:9px;right:8px;border:0;background:transparent;color:var(--ink3);
-  border-radius:6px;padding:1px 6px;line-height:1.2}
-.pmore:hover{background:var(--sunk);color:var(--ink)}
+.pj:hover{border-color:var(--line2)}
+.pj .nm{font-weight:600;font-size:14.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pj .mini{display:flex;gap:9px;font-size:12px;color:var(--ink3);flex:0 0 auto}
+.pj .mini b{font-weight:600}
+.pjx{color:var(--ink4);padding:2px 6px;border-radius:5px;flex:0 0 auto}
+.pjx:hover{background:var(--sunk);color:var(--ink)}
+.none{border:1px dashed var(--line2);border-radius:11px;padding:22px;text-align:center;color:var(--ink3);font-size:13px}
 
-.icard{
-  text-align:left;background:var(--card);border:1px solid var(--line);border-radius:11px;
-  padding:12px 13px;box-shadow:var(--sh);
-}
-.icard:hover{border-color:var(--line2)}
-.icard .nm{font-weight:500;font-size:13.5px}
-.icard .mt{color:var(--ink3);font-size:12px;margin-top:4px}
-.icard.fold{opacity:.5}
+/* =============================== 작업 화면 =============================== */
+#work{overflow:hidden}
 
-/* =========================  프로젝트 조망  ========================= */
-#proj{overflow:hidden}
-
-.top{
-  display:flex;align-items:center;gap:10px;padding:11px 16px;
+/* 조망 머리 — 「내가 무엇을 만들고 있는지」와 「어디까지 왔는지」 */
+.hd{
+  display:flex;align-items:center;gap:12px;padding:13px 22px;
   border-bottom:1px solid var(--line);background:var(--card);flex:0 0 auto;
 }
-.crumb{display:flex;align-items:center;gap:2px;min-width:0;flex:1;overflow:hidden}
-.crumb button{
-  border:0;background:transparent;padding:4px 7px;border-radius:6px;font-size:13px;
-  color:var(--ink2);max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+.hd .t{font-size:16px;font-weight:600;letter-spacing:-.01em;border:1px solid transparent;
+  padding:3px 7px;border-radius:7px;outline:none;max-width:46vw;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.hd .t:hover{background:var(--sunk)}
+.hd .t:focus{background:#fff;border-color:var(--line2)}
+.hd .sp{flex:1}
+.tally{display:flex;align-items:center;gap:13px;font-size:12.5px;color:var(--ink2);flex:0 0 auto}
+.tally span{display:flex;align-items:center;gap:5px}
+.tally i{width:8px;height:8px;border-radius:2px;display:block}
+.i-think{background:var(--think);border-radius:50%}
+.i-set{background:var(--set)}
+.i-made{background:var(--made)}
+
+/* 전체 진행 — 조망의 「어디까지 만들었는지」 */
+.gauge{height:3px;background:var(--sunk);flex:0 0 auto}
+.gauge i{display:block;height:100%;background:var(--made);transition:width .25s}
+
+/* 구조판. 이 화면 하나가 전부다 */
+.sheet{flex:1;min-height:0;overflow-y:auto;padding:22px 0 26vh}
+.inner{width:min(880px,94vw);margin:0 auto}
+
+.row{
+  position:relative;display:flex;align-items:flex-start;gap:9px;
+  border-radius:9px;padding:5px 8px 5px 6px;margin-bottom:1px;
 }
-.crumb button:hover{background:var(--sunk);color:var(--ink)}
-.crumb .now{color:var(--ink);font-weight:600;cursor:default}
-.crumb .now:hover{background:transparent}
-.crumb .sep{color:var(--line2);font-size:11px;flex:0 0 auto}
+.row:hover{background:var(--sunk)}
+.row.on{background:var(--focus)}
+/* 지금 보는 줄의 조상. 「이 부분이 전체에서 어디에 속하는지」를 따로 안 알려줘도 되게 */
+.row.anc{background:rgba(0,0,0,.022)}
+.row.anc .nm{color:var(--ink)}
 
-.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:0 0 auto}
-.seg button{border:0;background:var(--card);padding:5px 11px;font-size:12.5px;color:var(--ink2)}
-.seg button.on{background:var(--ink);color:#fff}
+/* 펼침 삼각형 */
+.tw{
+  width:15px;height:22px;flex:0 0 auto;display:grid;place-items:center;
+  color:var(--ink4);font-size:9px;line-height:1;
+}
+.tw:hover{color:var(--ink2)}
+.tw.leaf{visibility:hidden}
+.tw.fold{color:var(--ink2)}
 
-.body{display:flex;flex:1;min-height:0}
+/* 상태 — 💭 생각 중 / ✓ 정했음 / ■ 만들어짐. 눌러서 돌린다 */
+.st{
+  width:22px;height:22px;flex:0 0 auto;display:grid;place-items:center;
+  border-radius:6px;font-size:12px;line-height:1;
+}
+.st:hover{background:rgba(0,0,0,.06)}
+.st.think{color:var(--think)}
+.st.set{color:var(--set)}
+.st.made{color:var(--made)}
 
-/* --- 가운데: 조망판 --- */
-.stage{flex:1;min-width:0;display:flex;flex-direction:column;padding:18px 18px 0;overflow:hidden}
-.stagehd{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex:0 0 auto}
-.stagehd .tt{font-size:17px;font-weight:600;letter-spacing:-.01em}
-.stagehd .wh{color:var(--ink2);font-size:12.5px;margin-top:2px;max-width:70ch}
-.stagehd .sp{flex:1}
+.mid{flex:1;min-width:0}
+.nm{
+  outline:none;border-radius:5px;padding:1px 2px;min-height:22px;
+  line-height:1.55;word-break:break-word;white-space:pre-wrap;
+}
+.nm:empty::before{content:attr(data-ph);color:var(--ink4)}
+/* 생각은 붙어 있되, 보고 있는 줄이 아니면 한 줄로 접는다.
+   안 접으면 첫 화면이 글 벽이 되어 전체 구성이 안 보인다(원칙 4). */
+.note{
+  color:var(--ink3);font-size:12.5px;line-height:1.6;outline:none;
+  padding:1px 2px;margin-top:1px;white-space:pre-wrap;word-break:break-word;
+  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
+}
+.note:empty{display:none}
+.row.on .note{display:block;overflow:visible}
+.row.on .note:empty{display:block}
+.row.on .note:empty::before{content:"생각나는 것 (Shift+Enter 로 여기)";color:var(--ink4)}
 
-.grid{
-  flex:1;min-height:0;display:grid;gap:var(--gap,12px);align-content:start;
-  grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));
-  overflow-y:auto;overflow-x:hidden;padding-bottom:16px;
-}
-/* 흐름형이면 순서가 보여야 한다(원칙 6). 격자는 그대로 두고 번호와 잇는 선만 더한다 */
-.grid.flow .nd::before{
-  content:attr(data-i);position:absolute;top:-7px;left:11px;
-  background:var(--ink);color:#fff;font-size:10px;font-weight:600;
-  width:17px;height:17px;border-radius:50%;display:grid;place-items:center;
-}
-.grid.flow .nd::after{
-  content:"";position:absolute;top:50%;right:calc(var(--gap,12px) * -1);
-  width:var(--gap,12px);height:1px;background:var(--line2);
-}
-.grid.flow .nd.rowend::after{display:none}
+/* 층에 따라 무게가 다르다. 계층을 강제하는 게 아니라 한눈에 크기를 읽히게 */
+.d0 .nm{font-size:16.5px;font-weight:600;letter-spacing:-.01em}
+.d1 .nm{font-size:14.5px;font-weight:500}
+.d2 .nm{font-size:13.5px}
+.d3 .nm,.d4 .nm,.d5 .nm{font-size:13px;color:var(--ink2)}
+.d0{margin-top:16px}
+.d1{margin-top:2px}
 
-.nd{
-  position:relative;text-align:left;background:var(--card);border:1px solid var(--line);
-  border-radius:12px;padding:13px 14px;box-shadow:var(--sh);
-  display:flex;flex-direction:column;gap:6px;min-height:0;
-  transition:transform .1s, border-color .12s, box-shadow .12s;
-}
-.nd:hover{transform:translateY(-1px);border-color:var(--line2)}
-.nd.ai{border-style:dashed;border-color:var(--ai)}
-.nd.sel{border-color:var(--ink);box-shadow:0 0 0 2px rgba(26,28,26,.08),var(--sh)}
-.nd .hd{display:flex;align-items:center;gap:7px;min-width:0}
-.nd .nm{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nd .wh{
-  color:var(--ink3);font-size:12px;line-height:1.5;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
-.nd .bar{height:3px;border-radius:2px;background:var(--sunk);overflow:hidden}
-.nd .bar i{display:block;height:100%;background:var(--s-done);border-radius:2px}
-.nd .ft{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--ink3);margin-top:auto}
-.nd .q{color:var(--q);font-weight:600}
-.nd .aitag{color:var(--ai);font-weight:600;font-size:11px}
-/* 자리가 남으면 한 단계 아래 이름까지 보여준다.
-   빈 칸을 늘리는 것보다 낫다 — 누르지 않고도 두 층을 같이 본다(원칙 5·13). */
-.nd .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
-.nd .chip{
-  display:flex;align-items:center;gap:4px;max-width:100%;
-  font-size:11px;color:var(--ink2);background:var(--sunk);border-radius:5px;padding:2px 7px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.nd .chip i{width:5px;height:5px;border-radius:50%;background:var(--c,var(--line2));flex:0 0 auto}
-.nd .chip.more{background:transparent;color:var(--ink3)}
-/* 좁아지면 곁가지부터 접는다. 이해에 필요한 것만 남긴다(원칙 4) */
-body[data-tight="1"] .nd .wh{-webkit-line-clamp:1}
-body[data-tight="1"] .nd .chips{display:none}
-body[data-tight="2"] .nd{padding:9px 11px;gap:4px}
-body[data-tight="2"] .nd .wh,
-body[data-tight="2"] .nd .chips{display:none}
-body[data-tight="2"] .nd .nm{font-size:13px}
+/* 접힌 줄의 요약 — 접혀 있어도 안에 뭐가 있는지 안다 */
+.sum{display:flex;align-items:center;gap:8px;flex:0 0 auto;font-size:11.5px;color:var(--ink3);padding-top:3px}
+.sum .bar{width:44px;height:3px;border-radius:2px;background:var(--sunk);overflow:hidden}
+.sum .bar i{display:block;height:100%;background:var(--made)}
+.sum .q{color:var(--think);font-weight:600}
+.row:hover .sum{color:var(--ink2)}
 
-.addnd{
-  border:1px dashed var(--line2);background:transparent;border-radius:12px;color:var(--ink3);
-  font-size:13px;display:grid;place-items:center;min-height:54px;
-}
-.addnd:hover{background:var(--sunk);color:var(--ink2)}
+.deeper{margin-left:26px;border-left:1px solid var(--line);padding-left:2px}
 
-.leaf{
-  grid-column:1/-1;display:grid;place-items:center;color:var(--ink2);font-size:13px;
-  text-align:center;padding:34px 10px;line-height:1.8;
+.tip{
+  display:flex;align-items:center;gap:16px;padding:8px 22px;flex:0 0 auto;
+  border-top:1px solid var(--line);background:var(--card);
+  font-size:11.5px;color:var(--ink3);overflow-x:auto;
+}
+.tip b{color:var(--ink2);font-weight:600}
+.tip .sp{flex:1}
+kbd{
+  font-family:inherit;font-size:11px;background:var(--sunk);border:1px solid var(--line2);
+  border-bottom-width:2px;border-radius:4px;padding:0 4px;color:var(--ink2);
 }
 
-/* --- 아래 띠: 구조와 진행을 같이 본다(원칙 13) --- */
-.foot{
-  display:flex;align-items:center;gap:14px;padding:9px 18px;
-  border-top:1px solid var(--line);background:var(--card);flex:0 0 auto;font-size:12px;
-}
-.foot .leg{display:flex;align-items:center;gap:5px;color:var(--ink2)}
-.foot .sp{flex:1}
-
-/* --- 오른쪽: 아직 모르는 것. 절대 사라지지 않는다 --- */
-.rail{
-  width:290px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);
-  display:flex;flex-direction:column;min-height:0;
-}
-.railhd{display:flex;align-items:center;gap:8px;padding:14px 16px 8px;flex:0 0 auto}
-.railhd .t{font-size:13px;font-weight:600;color:var(--q)}
-.railhd .n{margin-left:auto;font-size:12px;color:var(--ink3)}
-.railwhy{padding:0 16px 10px;color:var(--ink3);font-size:11.5px;line-height:1.55;flex:0 0 auto}
-.qlist{flex:1;min-height:0;overflow-y:auto;padding:0 12px 8px}
-.qitem{
-  display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;
-  background:transparent;border:0;border-radius:8px;padding:8px;font-size:12.5px;line-height:1.5;
-}
-.qitem:hover{background:var(--sunk)}
-.qitem .b{color:var(--q);flex:0 0 auto;margin-top:1px;font-weight:700}
-.qitem .tx{flex:1;min-width:0}
-.qitem .ow{display:block;color:var(--ink3);font-size:11px;margin-top:2px}
-.railadd{display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--line);flex:0 0 auto}
-.railadd input{flex:1;min-width:0;border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12.5px;background:var(--paper);outline:none}
-.railadd input:focus{border-color:var(--line2);background:#fff}
-
-/* =========================  상세 패널  ========================= */
-.scrim{position:fixed;inset:0;background:rgba(20,24,20,.18);opacity:0;pointer-events:none;transition:opacity .15s;z-index:40}
-.scrim.on{opacity:1;pointer-events:auto}
-.panel{
-  position:fixed;top:0;right:0;bottom:0;width:min(430px,94vw);background:var(--card);
-  border-left:1px solid var(--line);z-index:41;display:flex;flex-direction:column;
-  transform:translateX(101%);transition:transform .18s cubic-bezier(.4,0,.2,1);
-  box-shadow:-8px 0 32px -20px rgba(20,28,22,.5);
-}
-.panel.on{transform:none}
-.phd{display:flex;align-items:center;gap:8px;padding:13px 14px;border-bottom:1px solid var(--line);flex:0 0 auto}
-.phd input{flex:1;min-width:0;border:1px solid transparent;background:transparent;font-size:15px;font-weight:600;padding:5px 7px;border-radius:7px;outline:none}
-.phd input:hover{background:var(--sunk)}
-.phd input:focus{background:#fff;border-color:var(--line2)}
-.pbody{flex:1;overflow-y:auto;padding:14px 16px 22px}
-.fld{margin-bottom:18px}
-.fld>label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:6px}
-.fld .hint{color:var(--ink3);font-size:11.5px;font-weight:400;margin-left:6px}
-.fld textarea{width:100%;min-height:62px;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--paper);outline:none;font-size:13px}
-.fld textarea:focus{border-color:var(--line2);background:#fff}
-.sts{display:flex;gap:6px;flex-wrap:wrap}
-.sts button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 10px;font-size:12.5px;display:flex;align-items:center;gap:6px}
-.sts button.on{border-color:var(--ink);background:var(--ink);color:#fff}
-
-.lst{display:flex;flex-direction:column;gap:5px;margin-bottom:7px}
-.li{display:flex;gap:8px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12.5px;line-height:1.5}
-.li .tx{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word}
-.li .x{border:0;background:transparent;color:var(--ink3);padding:0 3px;border-radius:5px;flex:0 0 auto}
-.li .x:hover{background:var(--sunk);color:var(--q)}
-.li.q{border-color:#EBD3CD;background:#FDF7F5}
-.li.q .tx::before{content:"? ";color:var(--q);font-weight:700}
-.row{display:flex;gap:6px}
-.row input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12.5px;background:var(--paper);outline:none}
-.row input:focus{border-color:var(--line2);background:#fff}
-
-.kid{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12.5px}
-.kid:hover{border-color:var(--line2)}
-.kid .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.kid .q{color:var(--q);font-size:11px;font-weight:600}
-
-.aibar{display:flex;align-items:center;gap:8px;background:#F5F2FC;border:1px solid #E0D8F4;border-radius:9px;padding:9px 11px;margin-bottom:16px;font-size:12.5px}
-.aibar .t{flex:1;color:#5B49A0;line-height:1.5}
-.pft{display:flex;gap:7px;padding:11px 14px;border-top:1px solid var(--line);flex:0 0 auto}
-
-/* =========================  모달  ========================= */
-.modal{
-  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50;
-  width:min(620px,94vw);max-height:86vh;background:var(--card);border:1px solid var(--line2);
-  border-radius:14px;box-shadow:0 24px 64px -24px rgba(20,28,22,.5);
+/* =============================== 겹창 =============================== */
+.scrim{position:fixed;inset:0;background:rgba(20,22,20,.2);z-index:40;display:none}
+.scrim.on{display:block}
+.dlg{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:41;
+  width:min(600px,94vw);max-height:84vh;background:var(--card);
+  border:1px solid var(--line2);border-radius:14px;
+  box-shadow:0 24px 60px -22px rgba(20,24,20,.45);
   display:none;flex-direction:column;
 }
-.modal.on{display:flex}
-.modal h3{margin:0;padding:16px 18px 0;font-size:15px;font-weight:600}
-.modal .desc{padding:7px 18px 0;color:var(--ink2);font-size:12.5px;line-height:1.6;white-space:pre-wrap}
-.modal .mb{padding:14px 18px 0;overflow-y:auto;flex:1;min-height:0}
-.modal textarea{width:100%;min-height:190px;resize:vertical;border:1px solid var(--line);border-radius:9px;padding:10px 11px;background:var(--paper);outline:none;font-size:12.5px;font-family:ui-monospace,Consolas,monospace;line-height:1.6}
-.modal .mf{display:flex;gap:8px;justify-content:flex-end;padding:14px 18px 16px}
-.modal .mf .sp{flex:1}
+.dlg.on{display:flex}
+.dlg h3{margin:0;padding:17px 20px 0;font-size:15px;font-weight:600}
+.dlg .de{padding:7px 20px 0;color:var(--ink2);font-size:12.5px;line-height:1.6;white-space:pre-wrap}
+.dlg .bd{padding:14px 20px 0;overflow-y:auto;flex:1;min-height:0}
+.dlg .bd .origin{white-space:pre-wrap;font-size:13.5px;line-height:1.8;color:var(--ink)}
+.dlg textarea{width:100%;min-height:170px;resize:vertical;border:1px solid var(--line);
+  border-radius:9px;padding:10px 11px;background:var(--paper);outline:none;
+  font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.6}
+.dlg .ft{display:flex;gap:8px;justify-content:flex-end;padding:15px 20px 17px}
+.dlg .ft .sp{flex:1}
 
 .toast{
-  position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);z-index:60;
-  background:var(--ink);color:#fff;padding:10px 17px;border-radius:10px;font-size:13px;
+  position:fixed;left:50%;bottom:56px;transform:translate(-50%,12px);z-index:60;
+  background:var(--ink);color:#fff;padding:10px 17px;border-radius:10px;font-size:12.5px;
   opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:88vw;text-align:center;
 }
 .toast.on{opacity:1;transform:translate(-50%,0)}
-
-/* =========================  아이디어 쪽지  ========================= */
-#idea{overflow-y:auto;overflow-x:hidden}
-.iwrap{width:min(720px,92vw);margin:0 auto;padding:30px 0 80px}
-.ibar{display:flex;align-items:center;gap:8px;margin-bottom:20px}
-.ibar .sp{flex:1}
-.ibox{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px;margin-bottom:13px;box-shadow:var(--sh)}
-.ibox h4{margin:0 0 9px;font-size:12.5px;font-weight:600;color:var(--ink2)}
-.ibox .otx{white-space:pre-wrap;font-size:13.5px;line-height:1.65}
-#ideaTitle{width:100%;border:1px solid transparent;background:transparent;font-size:20px;font-weight:700;padding:5px 7px;border-radius:8px;outline:none;letter-spacing:-.01em;margin-bottom:12px}
-#ideaTitle:hover{background:var(--sunk)}
-#ideaTitle:focus{background:#fff;border-color:var(--line2)}
-
-@media (max-width:900px){
-  .rail{width:250px}
-}
-@media (max-width:700px){
-  .rail{display:none}
-}
 </style>
 </head>
-<body data-at="home">
+<body data-at="list">
 
-<!-- ==================== 집 ==================== -->
-<div class="screen" id="home">
-  <div class="hwrap">
-    <h1 class="htitle">상상을 현실로</h1>
-    <p class="hsub">머릿속에 있는 걸 꺼내서, 무엇을 아직 모르는지 보이게 하는 곳</p>
+<!-- ============================ 목록 ============================ -->
+<div class="screen" id="list">
+  <div class="lwrap">
+    <h1 class="ltitle">상상을 현실로</h1>
+    <p class="lsub">머릿속에 있는 걸 밖에 꺼내놓고, 보면서 생각하는 곳</p>
 
     <div class="jot">
-      <h3>지금 뭐가 떠올랐나요?</h3>
-      <textarea id="jotIn" placeholder="아무렇게나 적어도 됩니다. 문장이 아니어도 되고요."></textarea>
+      <h3>뭘 만들고 싶은가요?</h3>
+      <p>줄바꿈만 해두면 그게 그대로 첫 뼈대가 됩니다. 정리해서 쓰지 않아도 됩니다.</p>
+      <textarea id="jotIn" placeholder="이명 겪는 사람용 건기식 몰&#10;상세페이지&#10;리뷰 모으기&#10;가격은 아직 모르겠음"></textarea>
       <div class="jotfoot">
         <span class="tip">Ctrl+Enter</span>
-        <button class="btn pri" id="jotAdd">아이디어로 담기</button>
+        <button class="btn pri" id="jotGo">꺼내놓기</button>
       </div>
     </div>
 
-    <div class="sect">
-      <h3>아이디어 <span class="n" id="ideaN"></span></h3>
-      <div class="cards" id="ideaList"></div>
-    </div>
-
-    <div class="sect">
-      <h3>프로젝트 <span class="n" id="projN"></span><span class="sp"></span>
-        <button class="btn sm" id="newProj">＋ 빈 프로젝트</button>
-      </h3>
-      <div class="cards" id="projList"></div>
-    </div>
-
-    <div class="sect hidden" id="arcSect">
-      <h3>보관함 <span class="n" id="arcN"></span></h3>
-      <div class="cards" id="arcList"></div>
-    </div>
-
-    <div class="sect" style="margin-top:46px">
-      <h3><span class="sp"></span>
+    <div class="lsect">
+      <h4>지금 굴리는 것 <span class="sp"></span>
         <button class="btn ghost sm" id="btnImport">첫 판에서 가져오기</button>
-        <button class="btn ghost sm" id="btnBackup">백업 복사</button>
-        <button class="btn ghost sm" id="btnRestore">백업 불러오기</button>
-      </h3>
+        <button class="btn ghost sm" id="btnBackup">백업</button>
+        <button class="btn ghost sm" id="btnRestore">되살리기</button>
+      </h4>
+      <div id="pjList"></div>
     </div>
   </div>
 </div>
 
-<!-- ==================== 아이디어 쪽지 ==================== -->
-<div class="screen" id="idea">
-  <div class="iwrap">
-    <div class="ibar">
-      <button class="btn ghost sm" id="ideaBack">← 집</button>
-      <span class="sp"></span>
-      <button class="btn sm" id="ideaFold">접어두기</button>
-      <button class="btn pri sm" id="ideaToProj">프로젝트로 만들기</button>
-    </div>
-    <input id="ideaTitle" placeholder="제목">
-    <div class="ibox"><h4>처음 적은 것</h4><div class="otx" id="ideaText"></div></div>
-    <div class="ibox">
-      <h4>추가로 생각난 것 <span style="font-weight:400;color:var(--ink3)">— 결정이 아니어도 됩니다</span></h4>
-      <div class="lst" id="ideaNotes"></div>
-      <div class="row"><input id="ideaNoteIn" placeholder="떠오른 것"><button class="btn sm" id="ideaNoteAdd">담기</button></div>
-    </div>
-    <div class="ibox">
-      <h4 style="color:var(--q)">아직 모르는 것</h4>
-      <div class="lst" id="ideaOpens"></div>
-      <div class="row"><input id="ideaOpenIn" placeholder="걸리는 것, 아직 모르는 것"><button class="btn sm" id="ideaOpenAdd">추가</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== 프로젝트 조망 ==================== -->
-<div class="screen" id="proj">
-  <div class="top">
-    <button class="btn ghost sm" id="toHome">← 집</button>
-    <nav class="crumb" id="crumb"></nav>
-    <div class="seg" id="waySeg">
-      <button data-way="area">영역</button><button data-way="flow">흐름</button>
-    </div>
-    <button class="btn sm" id="btnAsk">AI에게 물어볼 것</button>
-    <button class="btn sm" id="btnPaste">AI 답변 붙여넣기</button>
-  </div>
-
-  <div class="body">
-    <div class="stage">
-      <div class="stagehd">
-        <div style="min-width:0">
-          <div class="tt" id="stTitle"></div>
-          <div class="wh" id="stWhat"></div>
-        </div>
-        <span class="sp"></span>
-        <button class="btn ghost sm hidden" id="stOpen">이 요소 자세히</button>
-      </div>
-      <div class="grid" id="grid"></div>
-    </div>
-
-    <aside class="rail">
-      <div class="railhd"><span class="t">아직 모르는 것</span><span class="n" id="qCount"></span></div>
-      <div class="railwhy">미정은 오류가 아닙니다. 모르는 채로 두었다가 정해지면 그때 옮기면 됩니다.</div>
-      <div class="qlist" id="qList"></div>
-      <div class="railadd">
-        <input id="qIn" placeholder="여기서 걸리는 것">
-        <button class="btn sm" id="qAdd">추가</button>
-      </div>
-    </aside>
-  </div>
-
-  <div class="foot" id="foot"></div>
-</div>
-
-<!-- ==================== 상세 패널 ==================== -->
-<div class="scrim" id="scrim"></div>
-<div class="panel" id="panel">
-  <div class="phd">
-    <span class="dot" id="dName"></span>
-    <input id="dTitle" placeholder="이름">
-    <button class="btn ghost sm" id="dClose">닫기</button>
-  </div>
-  <div class="pbody">
-    <div class="aibar hidden" id="dAiBar">
-      <span class="t">AI가 제안한 것입니다. 아직 내가 정한 것이 아닙니다.</span>
-      <button class="btn sm" id="dAiKeep">내 것으로</button>
-    </div>
-
-    <div class="fld">
-      <label>지금 상태</label>
-      <div class="sts" id="dSts"></div>
-    </div>
-
-    <div class="fld">
-      <label>이게 뭔가</label>
-      <textarea id="dWhat" placeholder="한두 줄로"></textarea>
-    </div>
-
-    <div class="fld">
-      <label>정해진 것 <span class="hint">내가 분명히 정한 것만</span></label>
-      <div class="lst" id="dDecided"></div>
-      <div class="row"><input id="dDecIn" placeholder="정한 것"><button class="btn sm" id="dDecAdd">추가</button></div>
-    </div>
-
-    <div class="fld">
-      <label style="color:var(--q)">아직 모르는 것</label>
-      <div class="lst" id="dOpen"></div>
-      <div class="row"><input id="dOpenIn" placeholder="아직 모르는 것"><button class="btn sm" id="dOpenAdd">추가</button></div>
-    </div>
-
-    <div class="fld">
-      <label>이 안에 있는 것</label>
-      <div class="lst" id="dKids"></div>
-      <div class="row"><input id="dKidIn" placeholder="안에 넣을 것"><button class="btn sm" id="dKidAdd">추가</button></div>
-    </div>
-  </div>
-  <div class="pft">
-    <button class="btn sm" id="dEnter">이 안으로 들어가기</button>
-    <span style="flex:1"></span>
-    <button class="btn sm" id="dDel">지우기</button>
-  </div>
-</div>
-
-<!-- ==================== 모달 ==================== -->
-<div class="scrim" id="mScrim"></div>
-<div class="modal" id="modal">
-  <h3 id="mTitle"></h3>
-  <div class="desc" id="mDesc"></div>
-  <div class="mb"><textarea id="mTa"></textarea></div>
-  <div class="mf">
+<!-- ============================ 작업 화면 ============================ -->
+<div class="screen" id="work">
+  <div class="hd">
+    <button class="btn ghost sm" id="toList">← 목록</button>
+    <div class="t" id="pjTitle" contenteditable="plaintext-only" spellcheck="false"></div>
     <span class="sp"></span>
-    <button class="btn" id="mCancel">취소</button>
-    <button class="btn pri" id="mOk">확인</button>
+    <div class="tally" id="tally"></div>
+    <button class="btn ghost sm" id="btnOrigin">처음 적은 글</button>
+    <button class="btn ghost sm" id="btnAll">모두 펼치기</button>
+  </div>
+  <div class="gauge"><i id="gauge"></i></div>
+
+  <div class="sheet" id="sheet"><div class="inner" id="inner"></div></div>
+
+  <div class="tip">
+    <span><kbd>Enter</kbd> 새 줄</span>
+    <span><kbd>Tab</kbd> 안으로 · <kbd>Shift+Tab</kbd> 밖으로</span>
+    <span><kbd>Alt+↑↓</kbd> 순서</span>
+    <span><kbd>Shift+Enter</kbd> 생각 적기</span>
+    <span><kbd>Ctrl+Enter</kbd> 💭→✓→■</span>
+    <span class="sp"></span>
+    <span><b>옮겨도 아무것도 끊기지 않습니다.</b> 아래 달린 것은 따라옵니다</span>
   </div>
 </div>
 
+<!-- ============================ 겹창 ============================ -->
+<div class="scrim" id="scrim"></div>
+<div class="dlg" id="dlg">
+  <h3 id="dTitle"></h3>
+  <div class="de" id="dDesc"></div>
+  <div class="bd" id="dBody"></div>
+  <div class="ft">
+    <span class="sp"></span>
+    <button class="btn" id="dNo">닫기</button>
+    <button class="btn pri" id="dYes">확인</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
-/* =========================================================================
+/* ===========================================================================
    저장
 
-   첫 판은 localStorage["sulgyedo.v3"] 를 쓴다. 같은 file:// 이라 저장 칸을 공유한다.
-   여기서 그 칸에 쓰면 재우의 원본이 덮인다. 그래서 이 판은 자기 칸만 쓰고
-   첫 판 것은 읽기만 한다. 두 판을 나란히 켜놓고 비교할 수 있어야 한다.
-   ========================================================================= */
-var KEY    = "sangsang.v1";
-var OLDKEY = "sulgyedo.v3";
+   첫 판(설계도 캔버스)은 localStorage["sulgyedo.v3"] 를 쓴다.
+   같은 file:// 이라 저장 칸을 공유하므로, 여기서 그 칸에 쓰면 원본이 덮인다.
+   이 판은 자기 칸만 쓰고 첫 판 것은 읽기만 한다. 나란히 켜놓고 비교할 수 있어야 한다.
+   =========================================================================== */
+var KEY = "sangsang3", OLDKEY = "sulgyedo.v3";
 
-var ST = {
-  idea: {l:"생각 중",   c:"var(--s-idea)",  k:"st-idea"},
-  set:  {l:"정해짐",    c:"var(--s-set)",   k:"st-set"},
-  doing:{l:"만드는 중", c:"var(--s-doing)", k:"st-doing"},
-  done: {l:"됐음",      c:"var(--s-done)",  k:"st-done"}
-};
-var ST_KEYS = ["idea","set","doing","done"];
+/* 상태 셋. 본질 문장에서 그대로 나온 것이다 —
+   「무엇이 아직 미정인지 / 무엇을 결정했는지 / 어디까지 만들었는지」  */
+var STS = ["think","set","made"];
+var SIGN = { think:"💭", set:"✓", made:"■" };
+var LABEL= { think:"아직 생각 중", set:"정했음", made:"만들어짐" };
 
-var APP  = null;   /* {ideas:[], projects:[]} */
-var PR   = null;   /* 지금 열어둔 프로젝트 */
-var VIEW = null;   /* 지금 들여다보는 요소 id. null 이면 프로젝트 전체 */
-var SEL  = null;   /* 상세 패널에 열린 요소 id */
-var IDEA = null;
+var APP = null;      /* {projects:[]} */
+var PJ  = null;      /* 지금 열어둔 것 */
+var CUR = null;      /* 커서가 있는 줄 id */
 
 function uid(p){ return (p||"n") + Math.random().toString(36).slice(2,9); }
 function now(){ return Date.now(); }
 
-/* ---------------- 모양 갖추기 ---------------- */
+function mkNode(name, state){
+  return { id:uid(), name:name||"", state:state||"think", note:"", kids:[], fold:false };
+}
 function stampNode(n){
   if(!n.id) n.id = uid();
-  if(!n.name) n.name = "이름 없음";
-  if(!ST[n.status]) n.status = "idea";
-  if(typeof n.what !== "string") n.what = "";
-  if(!Array.isArray(n.decided)) n.decided = [];
-  if(!Array.isArray(n.open)) n.open = [];
-  if(typeof n.parent === "undefined") n.parent = null;
-  if(typeof n.ai !== "boolean") n.ai = false;
+  if(typeof n.name !== "string") n.name = "";
+  if(STS.indexOf(n.state) < 0) n.state = "think";
+  if(typeof n.note !== "string") n.note = "";
+  if(!Array.isArray(n.kids)) n.kids = [];
+  if(typeof n.fold !== "boolean") n.fold = false;
+  n.kids.forEach(stampNode);
   return n;
 }
-function stampProject(p){
+function stampPj(p){
   if(!p.id) p.id = uid("p");
-  if(!p.title) p.title = "이름 없는 프로젝트";
-  if(typeof p.what !== "string") p.what = "";
-  if(!ST[p.status]) p.status = "doing";
-  if(p.way !== "flow" && p.way !== "area") p.way = "area";
-  if(typeof p.archived !== "boolean") p.archived = false;
-  if(!Array.isArray(p.nodes)) p.nodes = [];
-  if(!Array.isArray(p.open)) p.open = [];
-  p.nodes.forEach(stampNode);
+  if(typeof p.title !== "string" || !p.title) p.title = "이름 없는 것";
+  if(typeof p.origin !== "string") p.origin = "";
+  if(!Array.isArray(p.roots)) p.roots = [];
+  p.roots.forEach(stampNode);
   if(!p.createdAt) p.createdAt = now();
   if(!p.updatedAt) p.updatedAt = now();
   return p;
 }
-function stampIdea(it){
-  if(!it.id) it.id = uid("i");
-  if(typeof it.text !== "string") it.text = "";
-  if(!it.title) it.title = firstLine(it.text);
-  if(!Array.isArray(it.notes)) it.notes = [];
-  if(!Array.isArray(it.open)) it.open = [];
-  if(typeof it.folded !== "boolean") it.folded = false;
-  if(typeof it.projectId === "undefined") it.projectId = null;
-  if(!it.createdAt) it.createdAt = now();
-  return it;
-}
-function firstLine(t){
-  var l = String(t||"").split("\n")[0].trim();
-  if(!l) return "제목 없음";
-  return l.length > 40 ? l.slice(0,40) + "…" : l;
-}
-
-function save(){
+function save(touch){
   if(!APP) return;
-  if(PR) PR.updatedAt = now();
-  saveQuiet();
-}
-/* 「마지막으로 본 곳」처럼 사람이 고친 게 아닌 것은 작업 시각을 건드리지 않는다.
-   그냥 들여다본 것만으로 집 화면 순서가 바뀌면 안 된다. */
-function saveQuiet(){
-  if(!APP) return;
+  if(PJ && touch !== false) PJ.updatedAt = now();
   try{ localStorage.setItem(KEY, JSON.stringify(APP)); }
   catch(e){ toast("저장하지 못했습니다 — " + e.message); }
 }
 function load(){
   try{
     var s = localStorage.getItem(KEY);
-    if(s){
-      var a = JSON.parse(s);
-      if(a && a.projects){
-        a.ideas = (a.ideas||[]).map(stampIdea);
-        a.projects.forEach(stampProject);
-        return a;
-      }
-    }
+    if(s){ var a = JSON.parse(s); if(a && a.projects){ a.projects.forEach(stampPj); return a; } }
   }catch(e){}
   return null;
 }
 
-/* 첫 판에서 읽어온다. 절대 쓰지 않는다. */
-function readOld(){
-  try{
-    var s = localStorage.getItem(OLDKEY);
-    if(!s) return null;
-    var a = JSON.parse(s);
-    return (a && a.projects) ? a : null;
-  }catch(e){ return null; }
+/* --------------------------- 나무 훑기 --------------------------- */
+/* 부모를 가리키는 번호가 아니라 통째로 품는 구조다.
+   그래야 옮길 때 아래 달린 것이 저절로 따라오고, 끊길 선이 아예 없다. */
+function walk(list, fn, depth, parent){
+  depth = depth || 0;
+  (list||[]).forEach(function(n, i){
+    fn(n, depth, list, i, parent || null);
+    walk(n.kids, fn, depth + 1, n);
+  });
 }
-function importOld(){
-  var old = readOld();
-  if(!old) return 0;
-  var n = 0;
-  (old.projects||[]).forEach(function(op){
-    /* x·y·lv·fold 는 안 가져온다. 이 판에서 배치는 사용자 데이터가 아니다 */
-    var p = stampProject({
-      title: op.title, what: op.what, status: op.status, archived: op.archived,
-      createdAt: op.createdAt, updatedAt: op.updatedAt,
-      nodes: (op.nodes||[]).map(function(o){
-        return stampNode({ id:o.id, name:o.name, what:o.what, status:o.status,
-          decided:(o.decided||[]).slice(), open:(o.open||[]).slice(),
-          parent:o.parent||null, ai:false });
-      })
-    });
-    APP.projects.push(p); n++;
+function find(id){
+  var hit = null;
+  walk(PJ.roots, function(n, d, list, i, parent){
+    if(n.id === id) hit = { node:n, depth:d, list:list, i:i, parent:parent };
   });
-  (old.ideas||[]).forEach(function(oi){
-    APP.ideas.push(stampIdea({
-      title: oi.title, text: oi.text, createdAt: oi.createdAt,
-      notes: (oi.notes||[]).map(function(x){ return typeof x === "string" ? x : (x && (x.t || x.text) || ""); }),
-      open: (oi.open||[]).slice()
-    }));
-  });
-  save();
-  return n;
+  return hit;
+}
+function countIn(n){
+  var c = { think:0, set:0, made:0, total:0 };
+  walk(n.kids, function(k){ c[k.state]++; c.total++; });
+  return c;
+}
+function tallyAll(){
+  var c = { think:0, set:0, made:0, total:0 };
+  walk(PJ.roots, function(n){ c[n.state]++; c.total++; });
+  return c;
+}
+/* 「어디까지 만들었는지」 — 안에 있는 것까지 포함해 만들어진 비율 */
+function madeRate(n){
+  var c = countIn(n);
+  if(!c.total) return n.state === "made" ? 1 : 0;
+  return c.made / c.total;
 }
 
-/* ---------------- 나무 계산 ---------------- */
-function N(id){
-  if(!PR || !id) return null;
-  for(var i=0;i<PR.nodes.length;i++) if(PR.nodes[i].id === id) return PR.nodes[i];
-  return null;
-}
-function kidsOf(id){
-  if(!PR) return [];
-  var want = id || null;
-  return PR.nodes.filter(function(n){ return (n.parent || null) === want; });
-}
-function ancestors(id){                       /* 가까운 것부터 */
-  var out = [], n = N(id), g = 0;
-  while(n && n.parent && g++ < 80){ n = N(n.parent); if(n) out.push(n); }
-  return out;
-}
-function subtree(id){
-  var out = [], stack = kidsOf(id).slice(), g = 0;
-  while(stack.length && g++ < 8000){
-    var n = stack.shift(); out.push(n);
-    stack = stack.concat(kidsOf(n.id));
-  }
-  return out;
-}
-/* 진행률 — 끝가지(더 안 쪼갠 것)의 「됐음」 비율 */
-function prog(id){
-  var leaves = subtree(id).filter(function(n){ return kidsOf(n.id).length === 0; });
-  if(!leaves.length){ var me = N(id); return (me && me.status === "done") ? 1 : 0; }
-  var d = leaves.filter(function(n){ return n.status === "done"; }).length;
-  return d / leaves.length;
-}
-function openCount(id){
-  var me = N(id);
-  var list = (me ? [me] : []).concat(subtree(id));
-  var n = list.reduce(function(a, x){ return a + (x.open ? x.open.length : 0); }, 0);
-  if(!id && PR) n += (PR.open || []).length;
-  return n;
-}
-/* 화면에 상시로 띄울 미정 목록. 지금 보는 범위 안의 것만 */
-function openList(id){
-  var out = [], me = N(id);
-  if(!id && PR) (PR.open||[]).forEach(function(t,i){ out.push({text:t, ownerId:null, owner:PR.title, i:i}); });
-  (me ? [me] : []).concat(subtree(id)).forEach(function(n){
-    (n.open||[]).forEach(function(t,i){ out.push({text:t, ownerId:n.id, owner:n.name, i:i}); });
-  });
-  return out;
-}
-
-/* ---------------- 잡동사니 ---------------- */
-function go(where){ document.body.dataset.at = where; }
+/* --------------------------- 화면 전환 --------------------------- */
+function go(w){ document.body.dataset.at = w; }
 function toast(m){
   var t = document.getElementById("toast");
   t.textContent = m; t.classList.add("on");
-  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove("on"); }, 2800);
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove("on"); }, 2600);
+}
+
+/* =========================================================================
+   목록
+   ========================================================================= */
+function renderList(){
+  var box = document.getElementById("pjList");
+  box.innerHTML = "";
+  if(!APP.projects.length){
+    box.innerHTML = '<div class="none">아직 없습니다. 위 칸에 생각나는 대로 적어보세요.</div>';
+    return;
+  }
+  APP.projects.slice().sort(function(a,b){ return (b.updatedAt||0) - (a.updatedAt||0); })
+    .forEach(function(p){
+      var was = PJ; PJ = p;
+      var c = tallyAll(); PJ = was;
+
+      var wrap = document.createElement("div");
+      wrap.style.position = "relative";
+      var b = document.createElement("button"); b.className = "pj";
+      var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = p.title;
+      var mi = document.createElement("span"); mi.className = "mini";
+      [["think",c.think],["set",c.set],["made",c.made]].forEach(function(x){
+        if(!x[1]) return;
+        var s = document.createElement("span");
+        s.style.color = "var(--" + x[0] + ")";
+        s.innerHTML = SIGN[x[0]] + " <b>" + x[1] + "</b>";
+        mi.appendChild(s);
+      });
+      if(!c.total){ var e = document.createElement("span"); e.textContent = "비어 있음"; mi.appendChild(e); }
+      b.appendChild(nm); b.appendChild(mi);
+      b.onclick = function(){ open(p.id); };
+
+      var x = document.createElement("button");
+      x.className = "pjx"; x.textContent = "✕"; x.title = "지우기";
+      x.style.cssText += "position:absolute;right:12px;top:14px";
+      x.onclick = function(ev){
+        ev.stopPropagation();
+        dlg({ title:"「" + p.title + "」 지우기", desc:"되돌릴 수 없습니다.", yes:"지우기",
+              run:function(){ APP.projects = APP.projects.filter(function(q){ return q.id !== p.id; });
+                              save(false); renderList(); } });
+      };
+      wrap.appendChild(b); wrap.appendChild(x);
+      box.appendChild(wrap);
+    });
+}
+
+/* 적은 글을 그대로 첫 뼈대로 만든다.
+   「밖으로 꺼낸다 → 대략적인 구조로 만든다」를 한 동작으로 붙였다.
+   들여쓴 줄은 들여쓴 대로 안에 넣는다. 정리해서 쓸 필요가 없어야 한다. */
+function fromText(text){
+  var lines = String(text||"").split("\n");
+  var roots = [], stack = [];
+  lines.forEach(function(raw){
+    if(!raw.trim()) return;
+    var indent = (raw.match(/^[\t 　]*/)[0] || "");
+    var depth = Math.floor(indent.replace(/\t/g, "  ").replace(/　/g, " ").length / 2);
+    var name = raw.trim().replace(/^[-*•·]\s*/, "");
+    var n = mkNode(name, "think");
+    while(stack.length > depth) stack.pop();
+    if(!stack.length){ roots.push(n); }
+    else { stack[stack.length - 1].kids.push(n); }
+    stack.push(n);
+  });
+  return roots;
+}
+
+/* =========================================================================
+   작업 화면 — 이 화면 하나가 전부다
+   ========================================================================= */
+/* 열자마자 커서를 박지 않는다. 커서가 있는 줄은 생각까지 펼쳐지는데,
+   그러면 열자마자 한 줄이 글 벽이 되어 전체 구성이 안 보인다.
+   「본다 → 생각한다 → 바꾼다」 순서대로, 보는 게 먼저다. */
+function open(id, focus){
+  PJ = APP.projects.filter(function(p){ return p.id === id; })[0];
+  if(!PJ) return;
+  stampPj(PJ);
+  CUR = null;
+  go("work"); render();
+  if(focus && PJ.roots.length) setTimeout(function(){ caretTo(PJ.roots[0].id, "end"); }, 40);
+}
+
+function render(){
+  document.getElementById("pjTitle").textContent = PJ.title;
+
+  var c = tallyAll();
+  var tl = document.getElementById("tally");
+  tl.innerHTML = "";
+  STS.forEach(function(k){
+    var s = document.createElement("span");
+    s.style.color = c[k] ? "var(--" + k + ")" : "var(--ink4)";
+    s.title = LABEL[k];
+    s.textContent = SIGN[k] + " " + c[k];
+    tl.appendChild(s);
+  });
+  document.getElementById("gauge").style.width =
+    (c.total ? Math.round(c.made / c.total * 100) : 0) + "%";
+
+  var inner = document.getElementById("inner");
+  inner.innerHTML = "";
+  if(!PJ.roots.length){
+    PJ.roots.push(mkNode("", "think"));
+    CUR = PJ.roots[0].id;
+  }
+  build(PJ.roots, inner, 0);
+  markPath();
+}
+
+function build(list, host, depth){
+  var box = host;
+  if(depth > 0){ box = document.createElement("div"); box.className = "deeper"; host.appendChild(box); }
+  list.forEach(function(n){
+    box.appendChild(rowEl(n, depth));
+    if(n.kids.length && !n.fold) build(n.kids, box, depth + 1);
+  });
+}
+
+function rowEl(n, depth){
+  var row = document.createElement("div");
+  row.className = "row d" + Math.min(depth, 5) + (CUR === n.id ? " on" : "");
+  row.dataset.id = n.id;
+
+  /* 펼침 */
+  var tw = document.createElement("button");
+  tw.className = "tw" + (n.kids.length ? (n.fold ? " fold" : "") : " leaf");
+  tw.textContent = n.fold ? "▶" : "▼";
+  tw.title = n.fold ? "펼치기" : "접기";
+  tw.onmousedown = function(e){ e.preventDefault(); };
+  tw.onclick = function(){ n.fold = !n.fold; save(false); render(); };
+  row.appendChild(tw);
+
+  /* 상태 — 눌러서 돌린다. 창을 열지 않는다 */
+  var st = document.createElement("button");
+  st.className = "st " + n.state;
+  st.textContent = SIGN[n.state];
+  st.title = LABEL[n.state] + " — 눌러서 바꾸기";
+  st.onmousedown = function(e){ e.preventDefault(); };
+  st.onclick = function(){ cycle(n); };
+  row.appendChild(st);
+
+  /* 이름 — 보고 있는 그 자리에서 바로 고친다 */
+  var mid = document.createElement("div"); mid.className = "mid";
+  var nm = document.createElement("div");
+  nm.className = "nm"; nm.contentEditable = "plaintext-only"; nm.spellcheck = false;
+  nm.dataset.ph = depth === 0 ? "무엇을 만드나" : "무엇이 필요한가";
+  nm.textContent = n.name;
+  nm.addEventListener("input", function(){ n.name = nm.textContent; save(); });
+  nm.addEventListener("focus", function(){ setCur(n.id); });
+  nm.addEventListener("keydown", function(e){ onKey(e, n, "name"); });
+  mid.appendChild(nm);
+
+  /* 생각 — 같은 줄에 붙어 있다. 따로 열지 않는다 */
+  var note = document.createElement("div");
+  note.className = "note"; note.contentEditable = "plaintext-only"; note.spellcheck = false;
+  note.textContent = n.note;
+  note.addEventListener("input", function(){ n.note = note.textContent; save(); });
+  note.addEventListener("focus", function(){ setCur(n.id); });
+  note.addEventListener("keydown", function(e){ onKey(e, n, "note"); });
+  mid.appendChild(note);
+  row.appendChild(mid);
+
+  /* 접혀 있어도 안에 뭐가 있는지 안다 */
+  if(n.kids.length){
+    var c = countIn(n);
+    var sum = document.createElement("div"); sum.className = "sum";
+    if(n.fold){
+      var t = document.createElement("span");
+      t.textContent = "안에 " + c.total + "개";
+      sum.appendChild(t);
+    }
+    if(c.think){ var q = document.createElement("span"); q.className = "q"; q.textContent = "💭 " + c.think; sum.appendChild(q); }
+    var bar = document.createElement("div"); bar.className = "bar";
+    var bi = document.createElement("i"); bi.style.width = Math.round(madeRate(n) * 100) + "%";
+    bar.appendChild(bi); sum.appendChild(bar);
+    var r = document.createElement("span"); r.textContent = c.made + "/" + c.total;
+    sum.appendChild(r);
+    row.appendChild(sum);
+  }
+  return row;
+}
+
+/* 지금 줄과 그 조상을 표시한다.
+   제자리에서 펼쳐지므로 「이 부분이 전체에서 어디인지」를 주소줄로 알려줄 필요가 없다. */
+function markPath(){
+  var path = {};
+  (function dive(list, chain){
+    list.forEach(function(n){
+      if(n.id === CUR) chain.forEach(function(x){ path[x] = 1; });
+      dive(n.kids, chain.concat([n.id]));
+    });
+  })(PJ.roots, []);
+  document.querySelectorAll(".row").forEach(function(r){
+    r.classList.toggle("anc", !!path[r.dataset.id]);
+    r.classList.toggle("on", r.dataset.id === CUR);
+  });
+}
+function setCur(id){ if(CUR === id) return; CUR = id; markPath(); }
+
+function caretTo(id, where, field){
+  var row = document.querySelector('.row[data-id="' + id + '"]');
+  if(!row) return;
+  var el = row.querySelector(field === "note" ? ".note" : ".nm");
+  if(!el) return;
+  el.focus();
+  var r = document.createRange(), s = window.getSelection();
+  r.selectNodeContents(el);
+  r.collapse(where === "start");     /* collapse(true) 가 「맨 앞」이다. 뒤집어 쓰면 글 앞에 끼어 쓰인다 */
+  s.removeAllRanges(); s.addRange(r);
+  CUR = id; markPath();
+  var rc = row.getBoundingClientRect(), sh = document.getElementById("sheet").getBoundingClientRect();
+  if(rc.top < sh.top + 20 || rc.bottom > sh.bottom - 20) row.scrollIntoView({ block:"center" });
+}
+
+/* --------------------------- 구조 바꾸기 ---------------------------
+   전부 그 자리에서 일어난다. 창이 열리지 않고, 아무것도 끊기지 않는다. */
+function cycle(n){
+  n.state = STS[(STS.indexOf(n.state) + 1) % 3];
+  save(); render(); caretTo(n.id, "end");
+}
+function addAfter(n){
+  var f = find(n.id); if(!f) return;
+  var fresh = mkNode("", "think");
+  /* 펼쳐진 채로 안에 뭐가 있으면, 새 줄은 그 안 맨 앞이 자연스럽다 */
+  if(n.kids.length && !n.fold) n.kids.unshift(fresh);
+  else f.list.splice(f.i + 1, 0, fresh);
+  save(); render(); caretTo(fresh.id, "end");
+}
+function indent(n){
+  var f = find(n.id); if(!f || f.i === 0) return;          /* 위 형제가 없으면 못 들어간다 */
+  var prev = f.list[f.i - 1];
+  f.list.splice(f.i, 1);
+  prev.fold = false;
+  prev.kids.push(n);                                       /* 아래 달린 것은 통째로 따라온다 */
+  save(); render(); caretTo(n.id, "end");
+}
+function outdent(n){
+  var f = find(n.id); if(!f || !f.parent) return;           /* 맨 바깥이면 그만 */
+  var pf = find(f.parent.id); if(!pf) return;
+  f.list.splice(f.i, 1);
+  pf.list.splice(pf.i + 1, 0, n);
+  save(); render(); caretTo(n.id, "end");
+}
+function moveUp(n){
+  var f = find(n.id); if(!f || f.i === 0) return;
+  f.list.splice(f.i, 1); f.list.splice(f.i - 1, 0, n);
+  save(); render(); caretTo(n.id, "end");
+}
+function moveDown(n){
+  var f = find(n.id); if(!f || f.i >= f.list.length - 1) return;
+  f.list.splice(f.i, 1); f.list.splice(f.i + 1, 0, n);
+  save(); render(); caretTo(n.id, "end");
+}
+function removeNode(n){
+  var f = find(n.id); if(!f) return;
+  if(f.list.length === 1 && !f.parent && !n.kids.length) return;   /* 마지막 한 줄은 남긴다 */
+  var goTo = null;
+  if(f.i > 0){ var p = f.list[f.i - 1]; goTo = lastOpen(p); }
+  else if(f.parent) goTo = f.parent.id;
+  else if(f.list[f.i + 1]) goTo = f.list[f.i + 1].id;
+  /* 안에 있던 것은 버리지 않고 그 자리로 올린다 */
+  var args = [f.i, 1].concat(n.kids);
+  f.list.splice.apply(f.list, args);
+  save(); render();
+  if(goTo) caretTo(goTo, "end"); else if(PJ.roots[0]) caretTo(PJ.roots[0].id, "end");
+}
+function lastOpen(n){
+  if(n.fold || !n.kids.length) return n.id;
+  return lastOpen(n.kids[n.kids.length - 1]);
+}
+/* 눈에 보이는 순서 그대로 위아래로 옮겨 다닌다 */
+function visible(){
+  var out = [];
+  (function dive(list){
+    list.forEach(function(n){ out.push(n); if(n.kids.length && !n.fold) dive(n.kids); });
+  })(PJ.roots);
+  return out;
+}
+function step(n, dir){
+  var v = visible(), i = -1;
+  v.forEach(function(x, k){ if(x.id === n.id) i = k; });
+  var t = v[i + dir];
+  if(t) caretTo(t.id, "end");
+}
+
+function onKey(e, n, field){
+  var meta = e.ctrlKey || e.metaKey;
+
+  if(e.key === "Enter" && meta){ e.preventDefault(); cycle(n); return; }
+  if(e.key === "Enter" && e.shiftKey){
+    e.preventDefault();
+    if(field === "name") caretTo(n.id, "end", "note");
+    else caretTo(n.id, "end", "name");
+    return;
+  }
+  if(e.key === "Enter"){ e.preventDefault(); addAfter(n); return; }
+
+  if(e.key === "Tab"){
+    e.preventDefault();
+    if(e.shiftKey) outdent(n); else indent(n);
+    return;
+  }
+  if(e.altKey && e.key === "ArrowUp"){ e.preventDefault(); moveUp(n); return; }
+  if(e.altKey && e.key === "ArrowDown"){ e.preventDefault(); moveDown(n); return; }
+
+  if(e.key === "ArrowUp" && !e.altKey){ e.preventDefault(); step(n, -1); return; }
+  if(e.key === "ArrowDown" && !e.altKey){ e.preventDefault(); step(n, +1); return; }
+
+  if(e.key === "Backspace" && field === "name" && !n.name && atStart()){
+    e.preventDefault(); removeNode(n); return;
+  }
+  if(e.key === "Escape"){ e.preventDefault(); e.target.blur(); }
+}
+function atStart(){
+  var s = window.getSelection();
+  return s && s.isCollapsed && s.anchorOffset === 0;
+}
+
+/* =========================================================================
+   겹창
+   ========================================================================= */
+var DLG = null;
+function dlg(o){
+  DLG = o;
+  document.getElementById("dTitle").textContent = o.title || "";
+  document.getElementById("dDesc").textContent = o.desc || "";
+  var bd = document.getElementById("dBody");
+  bd.innerHTML = "";
+  if(o.html) bd.innerHTML = o.html;
+  if(o.input){
+    var ta = document.createElement("textarea");
+    ta.id = "dTa"; ta.value = o.value || "";
+    if(o.readonly) ta.readOnly = true;
+    bd.appendChild(ta);
+  }
+  var yes = document.getElementById("dYes");
+  yes.textContent = o.yes || "확인";
+  yes.classList.toggle("hidden", o.yes === false);
+  document.getElementById("dNo").textContent = o.no || "닫기";
+  document.getElementById("dlg").classList.add("on");
+  document.getElementById("scrim").classList.add("on");
+  if(o.input) setTimeout(function(){ var t = document.getElementById("dTa"); t.focus(); if(o.readonly) t.select(); }, 50);
+}
+function dlgClose(){
+  document.getElementById("dlg").classList.remove("on");
+  document.getElementById("scrim").classList.remove("on");
+  DLG = null;
 }
 function copy(t){
   function fb(){
@@ -703,553 +755,61 @@ function copy(t){
   if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).catch(fb);
   else fb();
 }
-function listBox(elId, arr, onDel, isQ, emptyText){
-  var box = document.getElementById(elId);
-  box.innerHTML = "";
-  if(!arr || !arr.length){
-    var e = document.createElement("div");
-    e.style.cssText = "color:var(--ink3);font-size:12.5px;padding:3px 1px";
-    e.textContent = emptyText || "없습니다.";
-    box.appendChild(e); return;
-  }
-  arr.forEach(function(t, i){
-    var li = document.createElement("div"); li.className = "li" + (isQ ? " q" : "");
-    var tx = document.createElement("div"); tx.className = "tx"; tx.textContent = t;
-    var x  = document.createElement("button"); x.className = "x"; x.textContent = "✕"; x.title = "지우기";
-    x.onclick = function(){ onDel(i); };
-    li.appendChild(tx); li.appendChild(x); box.appendChild(li);
-  });
-}
 
 /* =========================================================================
-   집 화면
+   첫 판에서 가져오기 — 읽기만 한다
    ========================================================================= */
-function renderHome(){
-  var il = document.getElementById("ideaList");
-  il.innerHTML = "";
-  if(!APP.ideas.length){
-    il.innerHTML = '<div class="empty" style="grid-column:1/-1">아직 없습니다. 위 칸에 아무거나 적어보세요.</div>';
-  }else{
-    var open = APP.ideas.filter(function(i){ return !i.folded; });
-    var fold = APP.ideas.filter(function(i){ return i.folded; });
-    open.concat(fold).forEach(function(it){ il.appendChild(ideaCard(it)); });
-  }
-  document.getElementById("ideaN").textContent = APP.ideas.length ? APP.ideas.length + "개" : "";
-
-  var live = APP.projects.filter(function(p){ return !p.archived; });
-  var arc  = APP.projects.filter(function(p){ return p.archived; });
-
-  var pl = document.getElementById("projList");
-  pl.innerHTML = "";
-  if(!live.length){
-    pl.innerHTML = '<div class="empty" style="grid-column:1/-1">프로젝트가 없습니다.<br>아이디어를 프로젝트로 만들거나 빈 프로젝트로 시작하세요.</div>';
-  }else{
-    live.slice().sort(function(a,b){ return (b.updatedAt||0) - (a.updatedAt||0); })
-        .forEach(function(p){ pl.appendChild(projCard(p)); });
-  }
-  document.getElementById("projN").textContent = live.length ? live.length + "개" : "";
-
-  var as = document.getElementById("arcSect"), al = document.getElementById("arcList");
-  al.innerHTML = "";
-  if(!arc.length){ as.classList.add("hidden"); }
-  else{
-    as.classList.remove("hidden");
-    document.getElementById("arcN").textContent = arc.length + "개";
-    arc.forEach(function(p){ al.appendChild(projCard(p)); });
-  }
+function readOld(){
+  try{
+    var s = localStorage.getItem(OLDKEY);
+    if(!s) return null;
+    var a = JSON.parse(s);
+    return (a && a.projects) ? a : null;
+  }catch(e){ return null; }
 }
-function ideaCard(it){
-  var b = document.createElement("button");
-  b.className = "icard" + (it.folded ? " fold" : "");
-  var nm = document.createElement("div"); nm.className = "nm"; nm.textContent = it.title;
-  var mt = document.createElement("div"); mt.className = "mt";
-  var bits = [];
-  if(it.open.length) bits.push("모르는 것 " + it.open.length);
-  if(it.projectId)   bits.push("프로젝트가 됨");
-  if(it.folded)      bits.push("접어둠");
-  mt.textContent = bits.join(" · ") || "쪽지";
-  b.appendChild(nm); b.appendChild(mt);
-  b.onclick = function(){ openIdea(it.id); };
-  return b;
-}
-function projCard(p){
-  var was = PR; PR = p;                       /* 계산 함수들이 PR 을 본다 */
-  var pc = Math.round(prog(null) * 100);
-  var qn = openCount(null);
-  PR = was;
-
-  var wrap = document.createElement("div"); wrap.className = "pwrap";
-  var b = document.createElement("button");
-  b.className = "pcard"; b.style.setProperty("--c", ST[p.status].c);
-  var nm = document.createElement("div"); nm.className = "nm"; nm.textContent = p.title;
-  var de = document.createElement("div"); de.className = "de"; de.textContent = p.what || "";
-  /* 원칙 4 — 다섯 가지를 늘어놓지 않는다. 「어디까지 왔나」와 「무엇을 모르나」면 된다 */
-  var mt = document.createElement("div"); mt.className = "mt";
-  var s1 = document.createElement("span"); s1.textContent = ST[p.status].l + " · " + pc + "%";
-  mt.appendChild(s1);
-  if(qn){
-    var s2 = document.createElement("span"); s2.className = "qn";
-    s2.textContent = "모르는 것 " + qn;
-    mt.appendChild(s2);
-  }
-  b.appendChild(nm); b.appendChild(de); b.appendChild(mt);
-  b.onclick = function(){ openProject(p.id); };
-
-  var more = document.createElement("button");
-  more.className = "pmore"; more.textContent = "⋯"; more.title = "상태 · 보관";
-  more.onclick = function(e){ e.stopPropagation(); projMenu(p); };
-
-  wrap.appendChild(b); wrap.appendChild(more);
-  return wrap;
-}
-function projMenu(p){
-  var next = ST_KEYS[(ST_KEYS.indexOf(p.status) + 1) % 4];
-  ask({
-    title: "「" + p.title + "」",
-    desc: "지금 상태: " + ST[p.status].l + (p.archived ? "  (보관함에 있음)" : ""),
-    ok: ST[next].l + " 으로 바꾸기",
-    extra: p.archived ? "보관함에서 꺼내기" : "보관함에 넣기",
-    onExtra: function(){ p.archived = !p.archived; save(); renderHome(); toast(p.archived ? "보관함에 넣었습니다." : "꺼냈습니다."); },
-    run: function(){ p.status = next; save(); renderHome(); }
-  });
-}
-
-/* =========================================================================
-   아이디어 쪽지
-   ========================================================================= */
-function openIdea(id){
-  IDEA = APP.ideas.filter(function(i){ return i.id === id; })[0];
-  if(!IDEA) return;
-  renderIdea(); go("idea");
-}
-function renderIdea(){
-  if(!IDEA) return;
-  document.getElementById("ideaTitle").value = IDEA.title;
-  document.getElementById("ideaText").textContent = IDEA.text || "(비어 있음)";
-  document.getElementById("ideaFold").textContent = IDEA.folded ? "다시 펴기" : "접어두기";
-  listBox("ideaNotes", IDEA.notes, function(i){ IDEA.notes.splice(i,1); save(); renderIdea(); }, false);
-  listBox("ideaOpens", IDEA.open,  function(i){ IDEA.open.splice(i,1);  save(); renderIdea(); }, true);
-}
-/* 아이디어 → 프로젝트.
-   첫 판은 「큰 덩어리」를 사람이 직접 적는 화면을 하나 더 거치게 했다. 그 화면을 없앴다.
-   원칙 7 — 처음부터 완벽한 지도를 만들지 않는다. 빈 지도로 시작해서 AI에게 묻거나
-   직접 채우는 게 단계가 하나 적다. 적어둔 것은 하나도 안 버린다(원칙 8). */
-function ideaToProject(){
-  if(!IDEA) return;
-  var p = stampProject({ title: IDEA.title, what: (IDEA.text||"").slice(0,200), status:"idea", nodes:[] });
-  p.open = (IDEA.open || []).slice();
-  (IDEA.notes || []).forEach(function(t){
-    p.nodes.push(stampNode({ name: t.length > 28 ? t.slice(0,28) + "…" : t, what: t, status:"idea", parent:null }));
-  });
-  APP.projects.push(p);
-  IDEA.projectId = p.id;
-  save(); openProject(p.id);
-  toast("프로젝트를 만들었습니다. 적어둔 것은 하나도 안 버렸습니다.");
-}
-
-/* =========================================================================
-   프로젝트 조망 — 이 판의 핵심
-   ========================================================================= */
-function openProject(id){
-  PR = APP.projects.filter(function(p){ return p.id === id; })[0];
-  if(!PR) return;
-  stampProject(PR);
-  SEL = null;
-  /* 원칙 14 — 다시 열었을 때 「내가 어디까지 생각했지?」를 되찾아 준다.
-     맨 위로 되돌려 놓으면 지난번 자리를 매번 다시 찾아 들어가야 한다. */
-  VIEW = (PR.cursor && N(PR.cursor)) ? PR.cursor : null;
-  var resumed = !!VIEW;
-  closePanel(true);
-  go("proj"); renderProj();
-  if(resumed) toast("지난번에 보던 「" + N(VIEW).name + "」 로 왔습니다. 맨 위는 주소줄에서.");
-}
-function renderProj(){
-  if(!PR) return;
-  if(PR.cursor !== VIEW){ PR.cursor = VIEW; saveQuiet(); }
-  renderCrumb(); renderStage(); renderRail(); renderFoot();
-  var seg = document.getElementById("waySeg");
-  Array.prototype.forEach.call(seg.children, function(b){ b.classList.toggle("on", b.dataset.way === PR.way); });
-}
-function renderCrumb(){
-  var c = document.getElementById("crumb");
-  c.innerHTML = "";
-  var chain = VIEW ? ancestors(VIEW).slice().reverse().concat([N(VIEW)]) : [];
-  add(PR.title, function(){ VIEW = null; renderProj(); }, chain.length === 0);
-  chain.forEach(function(n, i){
-    if(!n) return;
-    var sep = document.createElement("span"); sep.className = "sep"; sep.textContent = "›";
-    c.appendChild(sep);
-    add(n.name, function(){ VIEW = n.id; renderProj(); }, i === chain.length - 1);
-  });
-  function add(label, fn, isNow){
-    var b = document.createElement("button");
-    b.textContent = label;
-    if(isNow) b.className = "now"; else b.onclick = fn;
-    c.appendChild(b);
-  }
-}
-
-/* 한 화면에 넣는다. 개수를 보고 칸 수와 빽빽함을 정한다.
-   사용자가 배치를 정하지 않는다 — 그건 그림 그리기지 생각 정리가 아니다. */
-function layout(n){
-  var grid = document.getElementById("grid");
-  var w = grid.clientWidth  || 900;
-  var h = grid.clientHeight || 460;
-  var cols;
-  if(n <= 2)       cols = Math.max(1, n);
-  else if(n <= 4)  cols = 2;
-  else if(n <= 9)  cols = 3;
-  else if(n <= 16) cols = 4;
-  else             cols = Math.min(6, Math.ceil(Math.sqrt(n)));
-  cols = Math.max(1, Math.min(cols, Math.floor(w / 190) || 1));
-  var rows = Math.ceil((n + 1) / cols);
-  var per = h / Math.max(1, rows);
-  document.body.dataset.tight = String(per < 76 ? 2 : (per < 106 ? 1 : 0));
-  grid.style.setProperty("--cols", cols);
-  grid.style.setProperty("--gap", per < 76 ? "8px" : "12px");
-  return cols;
-}
-function renderStage(){
-  var here = VIEW ? N(VIEW) : null;
-  document.getElementById("stTitle").textContent = here ? here.name : PR.title;
-  document.getElementById("stWhat").textContent  = here ? (here.what || "") : (PR.what || "");
-  document.getElementById("stOpen").classList.toggle("hidden", !here);
-
-  var grid = document.getElementById("grid");
-  grid.className = "grid" + (PR.way === "flow" ? " flow" : "");
-  grid.innerHTML = "";
-
-  var kids = kidsOf(VIEW);
-  var cols = layout(kids.length);
-
-  if(!kids.length){
-    var e = document.createElement("div");
-    e.className = "leaf";
-    e.innerHTML = here
-      ? "여기는 아직 안 쪼갰습니다.<br><span style='color:var(--ink3);font-size:12px'>더 나눌 게 있으면 아래 ＋ 로 더하세요.</span>"
-      : "아직 비어 있습니다.<br><span style='color:var(--ink3);font-size:12px'>큰 덩어리부터 하나씩 더하거나, 위의 [AI에게 물어볼 것]으로 시작하세요.</span>";
-    grid.appendChild(e);
-  }
-  kids.forEach(function(n, i){
-    var atRowEnd = ((i + 1) % cols === 0) || (i === kids.length - 1);
-    grid.appendChild(nodeCard(n, i, atRowEnd));
-  });
-
-  var add = document.createElement("button");
-  add.className = "addnd"; add.textContent = "＋ 더하기";
-  add.onclick = function(){ addNode(VIEW); };
-  grid.appendChild(add);
-}
-function nodeCard(n, i, rowend){
-  var kids = kidsOf(n.id);
-  var b = document.createElement("button");
-  b.className = "nd" + (n.ai ? " ai" : "") + (SEL === n.id ? " sel" : "") + (rowend ? " rowend" : "");
-  b.dataset.i = i + 1;
-
-  var hd = document.createElement("div"); hd.className = "hd";
-  var d  = document.createElement("span"); d.className = "dot " + ST[n.status].k;
-  var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = n.name;
-  hd.appendChild(d); hd.appendChild(nm);
-  if(n.ai){ var a = document.createElement("span"); a.className = "aitag"; a.textContent = "✨"; hd.appendChild(a); }
-  b.appendChild(hd);
-
-  if(n.what){ var wh = document.createElement("div"); wh.className = "wh"; wh.textContent = n.what; b.appendChild(wh); }
-
-  if(kids.length){
-    var bar = document.createElement("div"); bar.className = "bar";
-    var ii  = document.createElement("i"); ii.style.width = Math.round(prog(n.id) * 100) + "%";
-    bar.appendChild(ii); b.appendChild(bar);
-
-    /* 한 단계 아래 이름. 좁아지면 CSS 가 알아서 접는다 */
-    var chips = document.createElement("div"); chips.className = "chips";
-    var show = kids.slice(0, 6);
-    show.forEach(function(k){
-      var c = document.createElement("span"); c.className = "chip";
-      c.style.setProperty("--c", ST[k.status].c);
-      var dot = document.createElement("i"); c.appendChild(dot);
-      c.appendChild(document.createTextNode(k.name));
-      chips.appendChild(c);
+function importOld(){
+  var old = readOld();
+  if(!old) return 0;
+  var n = 0;
+  (old.projects || []).forEach(function(op){
+    var byId = {}, roots = [];
+    (op.nodes || []).forEach(function(o){
+      /* 상태 넷을 셋으로 옮긴다. 「만드는 중」은 아직 만들어진 게 아니므로 「정했음」이다 */
+      var st = o.status === "done" ? "made"
+             : (o.status === "set" || o.status === "doing") ? "set" : "think";
+      var lines = [];
+      (o.what ? [o.what] : []).forEach(function(t){ lines.push(t); });
+      (o.decided || []).forEach(function(t){ lines.push("· " + t); });
+      (o.open || []).forEach(function(t){ lines.push("? " + t); });   /* 하나도 안 버린다 */
+      byId[o.id] = { id:o.id, name:o.name || "", state:st, note:lines.join("\n"), kids:[], fold:false };
     });
-    if(kids.length > show.length){
-      var m = document.createElement("span"); m.className = "chip more";
-      m.textContent = "+" + (kids.length - show.length);
-      chips.appendChild(m);
-    }
-    b.appendChild(chips);
-  }
-
-  var ft = document.createElement("div"); ft.className = "ft";
-  var s1 = document.createElement("span");
-  s1.textContent = kids.length ? ("안에 " + kids.length + "개") : ST[n.status].l;
-  ft.appendChild(s1);
-  var q = openCount(n.id);
-  if(q){ var s2 = document.createElement("span"); s2.className = "q"; s2.textContent = "? " + q; ft.appendChild(s2); }
-  b.appendChild(ft);
-
-  /* 규칙이 하나뿐이라 배울 게 없다 — 안에 뭐가 있으면 들어가고, 없으면 상세를 연다.
-     AI 제안은 확인이 먼저다(원칙 9). */
-  b.onclick = function(){
-    if(n.ai){ openDetail(n.id); return; }
-    if(kidsOf(n.id).length){ VIEW = n.id; SEL = null; closePanel(true); renderProj(); }
-    else openDetail(n.id);
-  };
-  b.oncontextmenu = function(e){ e.preventDefault(); openDetail(n.id); };
-  return b;
-}
-function addNode(parentId){
-  var n = stampNode({ name:"새 요소", parent: parentId || null, status:"idea" });
-  PR.nodes.push(n); save(); renderProj(); openDetail(n.id);
-  setTimeout(function(){ var t = document.getElementById("dTitle"); t.focus(); t.select(); }, 200);
-}
-
-/* --- 오른쪽 띠 --- */
-function renderRail(){
-  var list = openList(VIEW);
-  document.getElementById("qCount").textContent = list.length ? list.length + "개" : "";
-  var box = document.getElementById("qList");
-  box.innerHTML = "";
-  if(!list.length){
-    var e = document.createElement("div");
-    e.style.cssText = "color:var(--ink3);font-size:12.5px;padding:10px 8px;line-height:1.6";
-    e.textContent = VIEW ? "여기는 걸리는 게 없습니다." : "아직 없습니다. 걸리는 게 생기면 아래에 적어두세요.";
-    box.appendChild(e); return;
-  }
-  list.forEach(function(o){
-    var b  = document.createElement("button"); b.className = "qitem";
-    var bl = document.createElement("span");   bl.className = "b"; bl.textContent = "?";
-    var tx = document.createElement("span");   tx.className = "tx";
-    tx.appendChild(document.createTextNode(o.text));
-    var ow = document.createElement("span");   ow.className = "ow"; ow.textContent = o.owner;
-    tx.appendChild(ow);
-    b.appendChild(bl); b.appendChild(tx);
-    b.onclick = function(){ if(o.ownerId) openDetail(o.ownerId); };
-    box.appendChild(b);
+    (op.nodes || []).forEach(function(o){
+      var me = byId[o.id];
+      if(o.parent && byId[o.parent]) byId[o.parent].kids.push(me);
+      else roots.push(me);
+    });
+    /* 열자마자 전부 펼쳐져 있으면 「전체가 대략 어떻게 구성되어 있는지」가 안 보인다.
+       접어두고, 보고 싶은 곳만 펼치게 한다. 접혀 있어도 안에 뭐가 있는지는 요약으로 보인다. */
+    (function foldAll(list){
+      list.forEach(function(n){ if(n.kids.length){ n.fold = true; foldAll(n.kids); } });
+    })(roots);
+    var origin = [];
+    if(op.what) origin.push(op.what);
+    (op.open || []).forEach(function(t){ origin.push("? " + t); });
+    APP.projects.push(stampPj({ title:op.title, origin:origin.join("\n"), roots:roots,
+                                createdAt:op.createdAt, updatedAt:op.updatedAt }));
+    n++;
   });
-}
-/* --- 아래 띠: 구조와 진행을 같이 본다(원칙 13) --- */
-function renderFoot(){
-  var f = document.getElementById("foot");
-  f.innerHTML = "";
-  var cnt = {idea:0,set:0,doing:0,done:0};
-  subtree(VIEW).forEach(function(n){ cnt[n.status]++; });
-  ST_KEYS.forEach(function(k){
-    var s = document.createElement("span"); s.className = "leg";
-    var d = document.createElement("span"); d.className = "dot " + ST[k].k;
-    s.appendChild(d);
-    s.appendChild(document.createTextNode(ST[k].l + " " + cnt[k]));
-    f.appendChild(s);
+  (old.ideas || []).forEach(function(oi){
+    var body = [oi.text || ""];
+    (oi.notes || []).forEach(function(x){ body.push(typeof x === "string" ? x : (x && (x.t || x.text) || "")); });
+    (oi.open || []).forEach(function(t){ body.push("? " + t); });
+    var text = body.filter(Boolean).join("\n");
+    APP.projects.push(stampPj({ title:oi.title || "쪽지", origin:text, roots:fromText(text) }));
+    n++;
   });
-  var sp = document.createElement("span"); sp.className = "sp"; f.appendChild(sp);
-  var pc = document.createElement("span"); pc.style.color = "var(--ink2)";
-  pc.textContent = (VIEW ? "이 안" : "전체") + " " + Math.round(prog(VIEW) * 100) + "% 됐음";
-  f.appendChild(pc);
-}
-
-/* =========================================================================
-   상세 패널
-   ========================================================================= */
-function openDetail(id){
-  var n = N(id); if(!n) return;
-  SEL = id;
-  document.getElementById("dTitle").value = n.name;
-  document.getElementById("dName").className = "dot " + ST[n.status].k;
-  document.getElementById("dWhat").value = n.what || "";
-  document.getElementById("dAiBar").classList.toggle("hidden", !n.ai);
-
-  var sts = document.getElementById("dSts");
-  sts.innerHTML = "";
-  ST_KEYS.forEach(function(k){
-    var b = document.createElement("button");
-    if(n.status === k) b.className = "on";
-    var d = document.createElement("span"); d.className = "dot " + ST[k].k;
-    b.appendChild(d); b.appendChild(document.createTextNode(ST[k].l));
-    b.onclick = function(){ n.status = k; save(); openDetail(id); };
-    sts.appendChild(b);
-  });
-
-  listBox("dDecided", n.decided, function(i){ n.decided.splice(i,1); save(); openDetail(id); }, false, "아직 정한 게 없습니다.");
-  listBox("dOpen",    n.open,    function(i){ n.open.splice(i,1);    save(); openDetail(id); }, true,  "걸리는 게 없습니다.");
-
-  var kb = document.getElementById("dKids");
-  kb.innerHTML = "";
-  var kids = kidsOf(id);
-  if(!kids.length){
-    var e = document.createElement("div");
-    e.style.cssText = "color:var(--ink3);font-size:12.5px;padding:3px 1px";
-    e.textContent = "아직 안 쪼갰습니다.";
-    kb.appendChild(e);
-  }
-  kids.forEach(function(k){
-    var b = document.createElement("button"); b.className = "kid";
-    var d = document.createElement("span"); d.className = "dot " + ST[k.status].k;
-    var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = k.name;
-    b.appendChild(d); b.appendChild(nm);
-    var q = openCount(k.id);
-    if(q){ var qq = document.createElement("span"); qq.className = "q"; qq.textContent = "? " + q; b.appendChild(qq); }
-    b.onclick = function(){ openDetail(k.id); };
-    kb.appendChild(b);
-  });
-
-  document.getElementById("panel").classList.add("on");
-  document.getElementById("scrim").classList.add("on");
-  renderStage(); renderRail(); renderFoot();
-}
-function closePanel(quiet){
-  document.getElementById("panel").classList.remove("on");
-  document.getElementById("scrim").classList.remove("on");
-  var was = SEL; SEL = null;
-  if(was && PR && !quiet){ renderStage(); renderRail(); renderFoot(); }
-}
-
-/* =========================================================================
-   AI 왕복
-
-   브라우저는 AI를 직접 못 부른다. 열쇠를 HTML 에 박는 방법은 쓰지 않는다 —
-   유출되고, 한도를 「차단」이 아니라 「알림」으로밖에 못 건다.
-   그래서 나가는 글과 돌아오는 글, 두 방향을 만든다. 첫 판에는 나가는 방향만 있었다.
-   ========================================================================= */
-function outline(id, depth){
-  var out = [];
-  kidsOf(id).forEach(function(n){
-    var pad = new Array(depth + 1).join("  ");
-    out.push(pad + "- " + n.name + " [" + ST[n.status].l + "]" + (n.what ? " — " + n.what : ""));
-    (n.decided||[]).forEach(function(d){ out.push(pad + "  · 정함: " + d); });
-    (n.open||[]).forEach(function(o){ out.push(pad + "  ? 모름: " + o); });
-    out = out.concat(outline(n.id, depth + 1));
-  });
-  return out;
-}
-function askText(){
-  var here = VIEW ? N(VIEW) : null;
-  var L = [];
-  L.push("아래는 내가 만들려는 것의 지금 상태다. 나는 개발자가 아니다.");
-  L.push("");
-  L.push("## 무엇을 만드나");
-  L.push(PR.title + (PR.what ? " — " + PR.what : ""));
-  if(here){
-    L.push("");
-    L.push("## 지금 보고 있는 곳");
-    L.push(ancestors(here.id).slice().reverse().map(function(a){ return a.name; }).concat([here.name]).join(" > "));
-    if(here.what) L.push(here.what);
-  }
-  L.push("");
-  L.push("## 지금 있는 것");
-  var body = outline(VIEW, 0);
-  L.push(body.length ? body.join("\n") : "(아직 비어 있다)");
-  var qs = openList(VIEW);
-  if(qs.length){
-    L.push("");
-    L.push("## 내가 이미 «모른다»고 적어둔 것");
-    qs.forEach(function(q){ L.push("- (" + q.owner + ") " + q.text); });
-  }
-  L.push("");
-  L.push("## 부탁");
-  L.push("1. 이 구조에서 내가 빠뜨린 것을 찾아라. 예쁘게 정리하지 말고 «빈틈»을 찾아라.");
-  L.push("2. 질문은 최대 3개. 지금 정하지 않으면 전체 구조가 크게 달라지는 것부터.");
-  L.push("3. 내가 분명히 정하지 않은 것을 정해진 것처럼 쓰지 마라. 모르는 건 모르는 채로 둬라.");
-  L.push("4. 위에 이미 적어둔 것과 겹치는 질문은 하지 마라.");
-  L.push("");
-  L.push("## 답은 아래 세 줄 형식으로만. 다른 말은 붙이지 마라.");
-  L.push("질문: (내가 아직 정하지 않은 것 한 줄)");
-  L.push("제안: (넣을 자리 이름) > (새로 넣을 것 이름)");
-  L.push("설명: (요소 이름) = (한 줄 설명)");
-  L.push("");
-  L.push("자리 이름은 위 목록에 있는 이름을 그대로 쓴다.");
-  L.push("맨 바깥에 넣을 거면 자리 이름 자리에 「전체」 라고 쓴다.");
-  return L.join("\n");
-}
-function findByName(name){
-  name = String(name||"").trim().toLowerCase();
-  if(!name || name === "전체" || name === "루트" || name === "root") return null;
-  var hit = PR.nodes.filter(function(n){ return n.name.trim().toLowerCase() === name; });
-  if(hit.length) return hit[0];
-  hit = PR.nodes.filter(function(n){
-    var a = n.name.toLowerCase();
-    return a.indexOf(name) >= 0 || name.indexOf(a) >= 0;
-  });
-  return hit.length ? hit[0] : null;
-}
-function applyAnswer(text){
-  var addQ = 0, addN = 0, addW = 0, miss = [];
-  String(text||"").split("\n").forEach(function(raw){
-    var line = raw.replace(/^\s*[-*•]\s*/, "").trim();
-    var m = line.match(/^(질문|제안|설명)\s*[:：]\s*(.+)$/);
-    if(!m) return;
-    var kind = m[1], rest = m[2].trim();
-
-    if(kind === "질문"){
-      var owner = VIEW ? N(VIEW) : null;
-      if(owner) owner.open.push(rest);
-      else PR.open.push(rest);
-      addQ++;
-      return;
-    }
-    if(kind === "제안"){
-      var gt = rest.indexOf(">");
-      var pname = gt >= 0 ? rest.slice(0, gt) : "전체";
-      var nname = (gt >= 0 ? rest.slice(gt + 1) : rest).trim();
-      if(!nname) return;
-      var parent = findByName(pname);
-      if(gt >= 0 && !parent && pname.trim() !== "전체") miss.push(pname.trim());
-      /* 원칙 9 — AI가 만든 것은 ai:true. 사용자가 확인해야 내 것이 된다 */
-      PR.nodes.push(stampNode({ name:nname, parent: parent ? parent.id : (VIEW || null), status:"idea", ai:true }));
-      addN++;
-      return;
-    }
-    if(kind === "설명"){
-      var eq = rest.indexOf("=");
-      if(eq < 0) return;
-      var target = findByName(rest.slice(0, eq));
-      var desc = rest.slice(eq + 1).trim();
-      if(target && desc && !target.what){ target.what = desc; addW++; }
-    }
-  });
-  save(); renderProj();
-
-  if(!addQ && !addN && !addW){
-    toast("적용할 게 없었습니다. 「질문:」 「제안:」 「설명:」 로 시작하는 줄이 있어야 합니다.");
-    return;
-  }
-  var msg = [];
-  if(addQ) msg.push("모르는 것 " + addQ + "개");
-  if(addN) msg.push("제안 " + addN + "개(✨)");
-  if(addW) msg.push("설명 " + addW + "개");
-  var t = msg.join(" · ") + " 담았습니다.";
-  if(miss.length) t += "  자리를 못 찾은 이름: " + miss.slice(0,3).join(", ");
-  toast(t);
-}
-
-/* =========================================================================
-   모달
-   ========================================================================= */
-var MODAL = null;
-function ask(o){
-  MODAL = o;
-  document.getElementById("mTitle").textContent = o.title || "";
-  document.getElementById("mDesc").textContent  = o.desc  || "";
-  var ta = document.getElementById("mTa");
-  ta.classList.toggle("hidden", !o.input);
-  ta.value = o.value || "";
-  if(o.readonly) ta.setAttribute("readonly","readonly"); else ta.removeAttribute("readonly");
-
-  var ok = document.getElementById("mOk");
-  ok.textContent = o.ok || "확인";
-  var mf = ok.parentNode;
-  var old = mf.querySelector(".extra"); if(old) old.remove();
-  if(o.extra){
-    var b = document.createElement("button");
-    b.className = "btn extra"; b.textContent = o.extra;
-    b.onclick = function(){ var f = o.onExtra; askClose(); if(f) f(); };
-    mf.insertBefore(b, document.getElementById("mCancel"));
-  }
-  document.getElementById("modal").classList.add("on");
-  document.getElementById("mScrim").classList.add("on");
-  if(o.input) setTimeout(function(){ ta.focus(); if(o.readonly) ta.select(); }, 60);
-}
-function askClose(){
-  document.getElementById("modal").classList.remove("on");
-  document.getElementById("mScrim").classList.remove("on");
-  MODAL = null;
+  save(false);
+  return n;
 }
 
 /* =========================================================================
@@ -1257,157 +817,82 @@ function askClose(){
    ========================================================================= */
 function on(id, ev, fn){ var e = document.getElementById(id); if(e) e.addEventListener(ev, fn); }
 
-/* 집 */
-on("jotAdd","click", function(){
-  var ta = document.getElementById("jotIn");
-  var t = ta.value.trim();
+on("jotGo","click", function(){
+  var ta = document.getElementById("jotIn"), t = ta.value.trim();
   if(!t){ toast("먼저 뭐라도 적어보세요."); return; }
-  APP.ideas.unshift(stampIdea({ text:t }));
-  save(); ta.value = ""; renderHome(); toast("담았습니다.");
+  var roots = fromText(t);
+  var p = stampPj({ title: roots.length ? roots[0].name : t.split("\n")[0], origin:t, roots:roots });
+  APP.projects.push(p); save(false); ta.value = "";
+  open(p.id, true);
+  toast("꺼내놨습니다. 이제 보면서 고치세요.");
 });
-on("jotIn","keydown", function(e){ if(e.key === "Enter" && (e.ctrlKey || e.metaKey)) document.getElementById("jotAdd").click(); });
-on("newProj","click", function(){
-  var p = stampProject({ title:"새 프로젝트", status:"idea", nodes:[] });
-  APP.projects.push(p); save(); openProject(p.id);
+on("jotIn","keydown", function(e){ if(e.key === "Enter" && (e.ctrlKey || e.metaKey)) document.getElementById("jotGo").click(); });
+
+on("toList","click", function(){ PJ = null; renderList(); go("list"); });
+on("pjTitle","input", function(e){ if(PJ){ PJ.title = e.target.textContent || "이름 없는 것"; save(); } });
+on("pjTitle","keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); e.target.blur(); } });
+
+on("btnOrigin","click", function(){
+  if(!PJ) return;
+  dlg({ title:"처음 적은 글",
+        desc:"「처음에 내가 뭐라고 생각했지?」 하고 돌아볼 때 보는 것입니다.\n지금 구조와 달라도 괜찮습니다. 생각은 바뀝니다.",
+        html:'<div class="origin">' + (PJ.origin ? PJ.origin.replace(/[<>&]/g, function(c){ return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c]; }) : "(없습니다)") + "</div>",
+        yes:false });
 });
-on("btnBackup","click", function(){
-  var s = JSON.stringify(APP);
-  ask({ title:"백업 복사", desc:"아래 글을 어디든 붙여넣어 두세요. [백업 불러오기]로 되돌릴 수 있습니다.",
-        input:true, readonly:true, value:s, ok:"복사하기",
-        run: function(){ copy(s); toast("복사했습니다."); } });
-});
-on("btnRestore","click", function(){
-  ask({ title:"백업 불러오기", desc:"지금 내용을 전부 덮어씁니다. 되돌릴 수 없습니다.",
-        input:true, value:"", ok:"덮어쓰기",
-        run: function(v){
-          try{
-            var a = JSON.parse(v);
-            if(!a || !a.projects) throw new Error("형식이 다릅니다");
-            a.ideas = (a.ideas||[]).map(stampIdea); a.projects.forEach(stampProject);
-            APP = a; save(); renderHome(); toast("불러왔습니다.");
-          }catch(e){ toast("불러오지 못했습니다 — " + e.message); }
-        } });
+on("btnAll","click", function(){
+  if(!PJ) return;
+  var anyFold = false;
+  walk(PJ.roots, function(n){ if(n.fold) anyFold = true; });
+  walk(PJ.roots, function(n){ if(n.kids.length) n.fold = !anyFold; });
+  document.getElementById("btnAll").textContent = anyFold ? "모두 접기" : "모두 펼치기";
+  save(false); render();
 });
 on("btnImport","click", function(){
   var old = readOld();
   if(!old){ toast("첫 판에 저장된 내용이 없습니다."); return; }
-  ask({ title:"첫 판에서 가져오기",
+  dlg({ title:"첫 판에서 가져오기",
         desc:"첫 판(설계도 캔버스)에 프로젝트 " + (old.projects||[]).length + "개, 아이디어 " + (old.ideas||[]).length + "개가 있습니다.\n\n" +
              "여기로 복사해옵니다. 첫 판 내용은 그대로 남습니다 — 읽기만 합니다.\n" +
-             "네모를 놓았던 자리는 안 가져옵니다. 이 판에서는 배치를 사람이 하지 않습니다.",
-        ok:"가져오기",
-        run: function(){ var n = importOld(); renderHome(); toast(n + "개를 가져왔습니다. 첫 판은 그대로 있습니다."); } });
+             "적어두신 「정해진 것」과 「아직 안 정한 것」은 하나도 안 버리고 생각 칸으로 옮깁니다.",
+        yes:"가져오기",
+        run:function(){ var n = importOld(); renderList(); toast(n + "개를 가져왔습니다. 첫 판은 그대로 있습니다."); } });
 });
-
-/* 아이디어 */
-on("ideaBack","click", function(){ IDEA = null; renderHome(); go("home"); });
-on("ideaTitle","input", function(e){ if(IDEA){ IDEA.title = e.target.value || "제목 없음"; save(); } });
-on("ideaFold","click", function(){ if(IDEA){ IDEA.folded = !IDEA.folded; save(); renderIdea(); } });
-on("ideaToProj","click", ideaToProject);
-on("ideaNoteAdd","click", function(){
-  var i = document.getElementById("ideaNoteIn"), t = i.value.trim();
-  if(t && IDEA){ IDEA.notes.push(t); i.value = ""; save(); renderIdea(); }
+on("btnBackup","click", function(){
+  var s = JSON.stringify(APP);
+  dlg({ title:"백업", desc:"아래 글을 어디든 붙여넣어 두세요.", input:true, readonly:true, value:s,
+        yes:"복사하기", run:function(){ copy(s); toast("복사했습니다."); } });
 });
-on("ideaNoteIn","keydown", function(e){ if(e.key === "Enter") document.getElementById("ideaNoteAdd").click(); });
-on("ideaOpenAdd","click", function(){
-  var i = document.getElementById("ideaOpenIn"), t = i.value.trim();
-  if(t && IDEA){ IDEA.open.push(t); i.value = ""; save(); renderIdea(); }
-});
-on("ideaOpenIn","keydown", function(e){ if(e.key === "Enter") document.getElementById("ideaOpenAdd").click(); });
-
-/* 프로젝트 */
-on("toHome","click", function(){ PR = null; VIEW = null; closePanel(true); renderHome(); go("home"); });
-on("stOpen","click", function(){ if(VIEW) openDetail(VIEW); });
-document.getElementById("waySeg").addEventListener("click", function(e){
-  var b = e.target.closest("button");
-  if(b && PR){ PR.way = b.dataset.way; save(); renderProj(); }
-});
-on("qAdd","click", function(){
-  var i = document.getElementById("qIn"), t = i.value.trim();
-  if(!t || !PR) return;
-  var owner = VIEW ? N(VIEW) : null;
-  if(owner) owner.open.push(t); else PR.open.push(t);
-  i.value = ""; save(); renderProj();
-});
-on("qIn","keydown", function(e){ if(e.key === "Enter") document.getElementById("qAdd").click(); });
-on("btnAsk","click", function(){
-  if(!PR) return;
-  var t = askText();
-  ask({ title:"AI에게 물어볼 것",
-        desc:"아래를 통째로 복사해서 Claude Code(또는 다른 AI)에 붙여넣으세요.\n답이 오면 [AI 답변 붙여넣기]로 가져옵니다.",
-        input:true, readonly:true, value:t, ok:"복사하기",
-        run: function(){ copy(t); toast("복사했습니다. AI에 붙여넣으세요."); } });
-});
-on("btnPaste","click", function(){
-  if(!PR) return;
-  ask({ title:"AI 답변 붙여넣기",
-        desc:"AI가 준 답을 그대로 붙여넣으세요.\n「질문:」은 «아직 모르는 것»으로, 「제안:」은 ✨ 표시가 붙은 요소로 들어갑니다.\n✨는 내가 확인하기 전까지 내 것이 아닙니다.",
-        input:true, value:"", ok:"담기",
-        run: function(v){ applyAnswer(v); } });
-});
-
-/* 상세 */
-on("dClose","click", function(){ closePanel(); });
-on("scrim","click", function(){ closePanel(); });
-on("dTitle","input", function(e){ var n = N(SEL); if(n){ n.name = e.target.value || "이름 없음"; save(); renderStage(); renderCrumb(); renderRail(); } });
-on("dWhat","input",  function(e){ var n = N(SEL); if(n){ n.what = e.target.value; save(); renderStage(); } });
-on("dDecAdd","click", function(){
-  var i = document.getElementById("dDecIn"), t = i.value.trim(), n = N(SEL);
-  if(t && n){ n.decided.push(t); i.value = ""; save(); openDetail(n.id); }
-});
-on("dDecIn","keydown", function(e){ if(e.key === "Enter") document.getElementById("dDecAdd").click(); });
-on("dOpenAdd","click", function(){
-  var i = document.getElementById("dOpenIn"), t = i.value.trim(), n = N(SEL);
-  if(t && n){ n.open.push(t); i.value = ""; save(); openDetail(n.id); }
-});
-on("dOpenIn","keydown", function(e){ if(e.key === "Enter") document.getElementById("dOpenAdd").click(); });
-on("dKidAdd","click", function(){
-  var i = document.getElementById("dKidIn"), t = i.value.trim(), n = N(SEL);
-  if(t && n){
-    PR.nodes.push(stampNode({ name:t, parent:n.id, status:"idea" }));
-    i.value = ""; save(); openDetail(n.id);
-  }
-});
-on("dKidIn","keydown", function(e){ if(e.key === "Enter") document.getElementById("dKidAdd").click(); });
-on("dEnter","click", function(){ if(SEL){ VIEW = SEL; closePanel(true); renderProj(); } });
-on("dAiKeep","click", function(){ var n = N(SEL); if(n){ n.ai = false; save(); openDetail(n.id); toast("내 것으로 옮겼습니다."); } });
-on("dDel","click", function(){
-  var n = N(SEL); if(!n) return;
-  var kids = subtree(n.id);
-  ask({ title:"「" + n.name + "」 지우기",
-        desc: kids.length ? ("안에 있는 " + kids.length + "개도 같이 지워집니다. 되돌릴 수 없습니다.") : "되돌릴 수 없습니다.",
-        ok:"지우기",
-        run: function(){
-          var kill = {}; kill[n.id] = 1; kids.forEach(function(k){ kill[k.id] = 1; });
-          PR.nodes = PR.nodes.filter(function(x){ return !kill[x.id]; });
-          if(VIEW && kill[VIEW]) VIEW = n.parent || null;
-          closePanel(true); save(); renderProj();
+on("btnRestore","click", function(){
+  dlg({ title:"되살리기", desc:"지금 있는 것을 전부 덮어씁니다. 되돌릴 수 없습니다.", input:true, value:"",
+        yes:"덮어쓰기",
+        run:function(v){
+          try{
+            var a = JSON.parse(v);
+            if(!a || !a.projects) throw new Error("형식이 다릅니다");
+            a.projects.forEach(stampPj); APP = a; save(false); renderList(); toast("되살렸습니다.");
+          }catch(e){ toast("되살리지 못했습니다 — " + e.message); }
         } });
 });
 
-/* 모달 */
-on("mCancel","click", askClose);
-on("mScrim","click", askClose);
-on("mOk","click", function(){
-  var o = MODAL, v = document.getElementById("mTa").value;
-  askClose(); if(o && o.run) o.run(v);
+on("dNo","click", dlgClose);
+on("scrim","click", dlgClose);
+on("dYes","click", function(){
+  var o = DLG, ta = document.getElementById("dTa");
+  var v = ta ? ta.value : "";
+  dlgClose(); if(o && o.run) o.run(v);
 });
-
-/* 단축키 */
 document.addEventListener("keydown", function(e){
-  if(e.key !== "Escape") return;
-  if(document.getElementById("modal").classList.contains("on")){ askClose(); return; }
-  if(document.getElementById("panel").classList.contains("on")){ closePanel(); return; }
-  if(document.body.dataset.at === "proj" && VIEW){
-    var up = ancestors(VIEW)[0];
-    VIEW = up ? up.id : null;
-    renderProj();
-  }
+  if(e.key === "Escape" && document.getElementById("dlg").classList.contains("on")) dlgClose();
 });
-var rz;
-window.addEventListener("resize", function(){
-  clearTimeout(rz);
-  rz = setTimeout(function(){ if(document.body.dataset.at === "proj" && PR) renderStage(); }, 120);
+/* 빈 곳을 누르면 맨 아래에 이어 쓴다 */
+document.getElementById("sheet").addEventListener("mousedown", function(e){
+  if(e.target !== this && e.target.id !== "inner") return;
+  e.preventDefault();
+  if(!PJ || !PJ.roots.length) return;
+  var last = PJ.roots[PJ.roots.length - 1];
+  if(last.name.trim() === "" && !last.kids.length){ caretTo(last.id, "end"); return; }
+  var fresh = mkNode("", "think");
+  PJ.roots.push(fresh); save(); render(); caretTo(fresh.id, "end");
 });
 
 /* =========================================================================
@@ -1415,15 +900,13 @@ window.addEventListener("resize", function(){
    ========================================================================= */
 APP = load();
 if(!APP){
-  APP = { ideas:[], projects:[] };
-  /* 첫 실행에 첫 판 내용이 있으면 바로 가져온다.
-     빈 화면을 띄우고 "가져오기를 누르세요"라고 하는 건 한 단계 더 시키는 것이다. */
+  APP = { projects:[] };
   var got = readOld() ? importOld() : 0;
-  save();
+  save(false);
   if(got) setTimeout(function(){ toast("첫 판에서 " + got + "개를 가져왔습니다. 첫 판 내용은 그대로 있습니다."); }, 500);
 }
-renderHome();
-go("home");
+renderList();
+go("list");
 </script>
 </body>
 </html>
