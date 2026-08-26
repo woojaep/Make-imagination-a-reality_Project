@@ -9,245 +9,229 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===========================================================================
-   상상을 현실로 — 세 번째 판
+   상상을 현실로 — 네 번째 판
 
-   본질(재우 정리, 2026-08-26):
-     아이디어를 눈에 보이는 구조로 정리하고, 그 구조를 보면서 생각하고,
-     전체를 조망하면서 현실화해간다.
-     구조화 자체가 생각하는 과정의 일부다.
+   형태를 이렇게 고른 근거 (전부 재우의 실제 발언·문서에서 나왔다):
 
-   그래서 이 판이 지키는 것 셋:
-     1. 모드가 없다.
-        「본다 → 생각한다 → 바꾼다 → 다시 본다」가 한 덩어리다.
-        보고 있는 그 줄을 그 자리에서 고친다. 편집 창을 따로 열지 않는다.
-     2. 바꾸는 데 벌칙이 없다.
-        옮겨도 아무것도 끊기지 않는다. 아래 달린 것은 따라온다.
-        (첫 판은 층을 옮기면 이어둔 선이 전부 끊겨서, 생각을 바꾸는 행동에 벌칙을 줬다)
-     3. 전체가 사라지지 않는다.
-        들어갔다 나오는 게 아니라 제자리에서 펼쳐진다.
-        그래서 「이 부분이 전체에서 어디인지」를 따로 알려줄 필요가 없다.
+   · 2026-08-21 21:57  글로 된 3단 구조를 보고
+       "난감하다 / 직관적이진 않습니다 / 만다라트나 조직도, 마인드맵처럼 도식화나
+        가시적인 이미지로 먼저 확인 가능했음 좋겠어요"
+       → 읽어서 아는 형태(목록·아웃라이너)는 이미 한 번 거절당했다.
+   · 2026-08-24 07:48  "프로젝트 전체 구조가 한눈에 들어오도록"
+   · CLAUDE.md 원칙 15  Infinite canvas / Document manager 로 축소하지 말 것
+       → 첫 판은 무한 캔버스(가로 6,948px)로, 세 번째 판은 문서 목록으로 각각 실패했다.
+
+   셋을 동시에 만족하는 형태는 「담기는 상자」다.
+     - 상자가 상자를 품으므로 선을 긋지 않아도 관계가 보인다
+     - 면적을 나눠 가지므로 아무리 커져도 화면을 넘지 않는다
+     - 안이 빽빽한지 비었는지가 글자를 읽기 전에 눈으로 들어온다
+
+   그리고 앞 판에서 잘 나온 것은 그대로 살렸다.
+     - 데이터를 통째로 품는 구조  → 옮겨도 아무것도 끊기지 않는다
+     - 모드 없음                 → 보고 있는 그 자리에서 고친다
+     - 상태 셋(상상→결정→현실)     → 「아직 안 정한 것」 별도 목록 없음
    =========================================================================== */
 
 :root{
-  --paper:#FBFAF7; --card:#FFFFFF; --sunk:#F2F1EC;
-  --ink:#191B18; --ink2:#5A5F57; --ink3:#8D9188; --ink4:#B4B8AF;
-  --line:#E5E4DD; --line2:#D0D0C7;
-  --think:#B08A3E;   /* 💭 아직 생각 중 */
-  --set:#4B7BB5;     /* ✓ 정했음 */
-  --made:#2E8A50;    /* ■ 만들어짐 */
-  --focus:#F5F3E9;
+  --paper:#F7F6F2; --card:#FFFFFF; --sunk:#EFEEE9;
+  --ink:#181A17; --ink2:#585D55; --ink3:#8B8F87; --ink4:#B2B6AD;
+  --line:#E4E3DC; --line2:#CFCFC6;
+  --think:#C08A2E;   /* 아직 생각 중 */
+  --set:#4477B8;     /* 정했음 */
+  --made:#2C8A4E;    /* 만들어짐 */
+  --drop:#2C8A4E;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{
-  background:var(--paper); color:var(--ink);
+  background:var(--paper);color:var(--ink);
   font-family:"IBM Plex Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
-  font-size:14px; line-height:1.5; overflow:hidden;
+  font-size:14px;line-height:1.5;overflow:hidden;
+  -webkit-user-select:none;user-select:none;
 }
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 input,textarea{font:inherit;color:inherit}
 .hidden{display:none !important}
 
-.btn{
-  border:1px solid var(--line2);background:var(--card);border-radius:8px;
-  padding:6px 12px;font-size:12.5px;font-weight:500;white-space:nowrap;
-}
+.btn{border:1px solid var(--line2);background:var(--card);border-radius:8px;
+  padding:6px 12px;font-size:12.5px;font-weight:500;white-space:nowrap}
 .btn:hover{background:var(--sunk)}
 .btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
 .btn.ghost{border-color:transparent;background:transparent;color:var(--ink2)}
 .btn.ghost:hover{background:var(--sunk);color:var(--ink)}
-.btn.sm{padding:3px 8px;font-size:12px;border-radius:6px}
+.btn.sm{padding:3px 9px;font-size:12px;border-radius:6px}
 
 .screen{position:fixed;inset:0;display:none;flex-direction:column}
 body[data-at="list"] #list{display:flex}
-body[data-at="work"] #work{display:flex}
+body[data-at="board"] #board{display:flex}
 
-/* =============================== 목록 =============================== */
+/* ================================ 목록 ================================ */
 #list{overflow-y:auto}
-.lwrap{width:min(760px,92vw);margin:0 auto;padding:56px 0 90px}
+.lwrap{width:min(760px,92vw);margin:0 auto;padding:54px 0 90px}
 .ltitle{font-size:25px;font-weight:700;letter-spacing:-.02em;margin:0 0 5px}
-.lsub{color:var(--ink3);font-size:13px;margin:0 0 32px}
+.lsub{color:var(--ink3);font-size:13px;margin:0 0 30px}
 .jot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
 .jot h3{margin:0 0 4px;font-size:14px;font-weight:600}
 .jot p{margin:0 0 11px;color:var(--ink3);font-size:12px}
-.jot textarea{
-  width:100%;min-height:110px;resize:vertical;border:1px solid var(--line);
-  border-radius:9px;padding:11px 12px;background:var(--paper);outline:none;line-height:1.7;
-}
+.jot textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--line);
+  border-radius:9px;padding:11px 12px;background:var(--paper);outline:none;line-height:1.75;
+  -webkit-user-select:text;user-select:text}
 .jot textarea:focus{border-color:var(--line2);background:#fff}
 .jotfoot{display:flex;align-items:center;gap:10px;margin-top:10px}
 .jotfoot .tip{flex:1;color:var(--ink3);font-size:11.5px}
 
-.lsect{margin-top:36px}
+.lsect{margin-top:34px}
 .lsect h4{display:flex;align-items:center;gap:8px;margin:0 0 11px;font-size:12.5px;font-weight:600;color:var(--ink2)}
 .lsect h4 .sp{flex:1}
-.pj{
-  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+.pj{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
   background:var(--card);border:1px solid var(--line);border-radius:11px;
-  padding:13px 15px;margin-bottom:8px;
-}
+  padding:13px 15px;margin-bottom:8px}
 .pj:hover{border-color:var(--line2)}
 .pj .nm{font-weight:600;font-size:14.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pj .mini{display:flex;gap:9px;font-size:12px;color:var(--ink3);flex:0 0 auto}
-.pj .mini b{font-weight:600}
-.pjx{color:var(--ink4);padding:2px 6px;border-radius:5px;flex:0 0 auto}
+.pj .mini{display:flex;gap:10px;font-size:12px;color:var(--ink3);flex:0 0 auto}
+.pjx{position:absolute;right:12px;top:14px;color:var(--ink4);padding:2px 6px;border-radius:5px}
 .pjx:hover{background:var(--sunk);color:var(--ink)}
 .none{border:1px dashed var(--line2);border-radius:11px;padding:22px;text-align:center;color:var(--ink3);font-size:13px}
 
-/* =============================== 작업 화면 =============================== */
-#work{overflow:hidden}
-
-/* 조망 머리 — 「내가 무엇을 만들고 있는지」와 「어디까지 왔는지」 */
-.hd{
-  display:flex;align-items:center;gap:12px;padding:13px 22px;
-  border-bottom:1px solid var(--line);background:var(--card);flex:0 0 auto;
-}
-.hd .t{font-size:16px;font-weight:600;letter-spacing:-.01em;border:1px solid transparent;
-  padding:3px 7px;border-radius:7px;outline:none;max-width:46vw;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap}
-.hd .t:hover{background:var(--sunk)}
-.hd .t:focus{background:#fff;border-color:var(--line2)}
-.hd .sp{flex:1}
-.tally{display:flex;align-items:center;gap:13px;font-size:12.5px;color:var(--ink2);flex:0 0 auto}
-.tally span{display:flex;align-items:center;gap:5px}
-.tally i{width:8px;height:8px;border-radius:2px;display:block}
-.i-think{background:var(--think);border-radius:50%}
-.i-set{background:var(--set)}
-.i-made{background:var(--made)}
-
-/* 전체 진행 — 조망의 「어디까지 만들었는지」 */
+/* ============================== 조망판 ============================== */
+#board{overflow:hidden}
+.hd{display:flex;align-items:center;gap:10px;padding:11px 18px;
+  border-bottom:1px solid var(--line);background:var(--card);flex:0 0 auto}
+.path{display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow:hidden}
+.path button{padding:4px 8px;border-radius:6px;font-size:13px;color:var(--ink2);
+  max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.path button:hover{background:var(--sunk);color:var(--ink)}
+.path .now{color:var(--ink);font-weight:600;cursor:default}
+.path .now:hover{background:transparent}
+.path .sep{color:var(--line2);font-size:11px}
+.tally{display:flex;align-items:center;gap:12px;font-size:12.5px;flex:0 0 auto}
+.tally span{display:flex;align-items:center;gap:5px;color:var(--ink2)}
+.tally i{width:9px;height:9px;border-radius:3px;display:block}
 .gauge{height:3px;background:var(--sunk);flex:0 0 auto}
 .gauge i{display:block;height:100%;background:var(--made);transition:width .25s}
 
-/* 구조판. 이 화면 하나가 전부다 */
-.sheet{flex:1;min-height:0;overflow-y:auto;padding:22px 0 26vh}
-.inner{width:min(880px,94vw);margin:0 auto}
+/* 이 칸이 이 제품의 전부다. 스크롤이 없다 — 내용이 늘면 안에서 나눠 갖는다 */
+.stage{flex:1;min-height:0;position:relative;overflow:hidden;padding:16px}
+.canvas{position:absolute;inset:16px}
 
-.row{
-  position:relative;display:flex;align-items:flex-start;gap:9px;
-  border-radius:9px;padding:5px 8px 5px 6px;margin-bottom:1px;
+/* 상자 */
+.bx{
+  position:absolute;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;overflow:hidden;transition:box-shadow .12s,border-color .12s;
+  border-left:3px solid var(--c,var(--line2));
 }
-.row:hover{background:var(--sunk)}
-.row.on{background:var(--focus)}
-/* 지금 보는 줄의 조상. 「이 부분이 전체에서 어디에 속하는지」를 따로 안 알려줘도 되게 */
-.row.anc{background:rgba(0,0,0,.022)}
-.row.anc .nm{color:var(--ink)}
+.bx:hover{border-color:var(--line2);box-shadow:0 2px 10px -6px rgba(20,24,20,.35)}
+.bx.sel{border-color:var(--ink);box-shadow:0 0 0 2px rgba(24,26,23,.10)}
+.bx.drag{opacity:.35}
+.bx.drop{border-color:var(--drop);box-shadow:0 0 0 2px rgba(44,138,78,.28)}
+.bx.d1{border-radius:9px}
+.bx.d2{border-radius:8px}
 
-/* 펼침 삼각형 */
-.tw{
-  width:15px;height:22px;flex:0 0 auto;display:grid;place-items:center;
-  color:var(--ink4);font-size:9px;line-height:1;
-}
-.tw:hover{color:var(--ink2)}
-.tw.leaf{visibility:hidden}
-.tw.fold{color:var(--ink2)}
-
-/* 상태 — 💭 생각 중 / ✓ 정했음 / ■ 만들어짐. 눌러서 돌린다 */
-.st{
-  width:22px;height:22px;flex:0 0 auto;display:grid;place-items:center;
-  border-radius:6px;font-size:12px;line-height:1;
-}
-.st:hover{background:rgba(0,0,0,.06)}
-.st.think{color:var(--think)}
-.st.set{color:var(--set)}
-.st.made{color:var(--made)}
-
-.mid{flex:1;min-width:0}
+.bh{display:flex;align-items:center;gap:6px;padding:6px 8px 4px 8px;cursor:grab}
+.bh:active{cursor:grabbing}
+.dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:var(--c,var(--line2));cursor:pointer}
+.dot:hover{box-shadow:0 0 0 3px rgba(0,0,0,.07)}
 .nm{
-  outline:none;border-radius:5px;padding:1px 2px;min-height:22px;
-  line-height:1.55;word-break:break-word;white-space:pre-wrap;
+  flex:1;min-width:0;outline:none;font-weight:600;font-size:14px;line-height:1.35;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:4px;padding:1px 3px;
+  -webkit-user-select:text;user-select:text;cursor:text;
 }
-.nm:empty::before{content:attr(data-ph);color:var(--ink4)}
-/* 생각은 붙어 있되, 보고 있는 줄이 아니면 한 줄로 접는다.
-   안 접으면 첫 화면이 글 벽이 되어 전체 구성이 안 보인다(원칙 4). */
-.note{
-  color:var(--ink3);font-size:12.5px;line-height:1.6;outline:none;
-  padding:1px 2px;margin-top:1px;white-space:pre-wrap;word-break:break-word;
-  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
+.nm:focus{background:var(--sunk);white-space:normal;overflow:visible}
+.nm:empty::before{content:"이름";color:var(--ink4)}
+.bx.d0 .nm{font-size:15.5px}
+.bx.d1 .nm{font-size:13.5px;font-weight:500}
+.bx.d2 .nm{font-size:12.5px;font-weight:500}
+.mark{font-size:11px;color:var(--ink3);flex:0 0 auto;white-space:nowrap}
+.mark b{font-weight:600;color:var(--ink2)}
+.bar{width:34px;height:3px;border-radius:2px;background:var(--sunk);overflow:hidden;flex:0 0 auto}
+.bar i{display:block;height:100%;background:var(--made)}
+.zoom{color:var(--ink4);font-size:11px;padding:0 3px;border-radius:4px;flex:0 0 auto;opacity:0}
+.bx:hover .zoom{opacity:1}
+.zoom:hover{background:var(--sunk);color:var(--ink)}
+
+.bnote{
+  padding:0 10px 5px 10px;color:var(--ink3);font-size:11.5px;line-height:1.5;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  -webkit-user-select:text;user-select:text;outline:none;
 }
-.note:empty{display:none}
-.row.on .note{display:block;overflow:visible}
-.row.on .note:empty{display:block}
-.row.on .note:empty::before{content:"생각나는 것 (Shift+Enter 로 여기)";color:var(--ink4)}
+.bnote:focus{-webkit-line-clamp:99;background:var(--sunk);border-radius:5px}
 
-/* 층에 따라 무게가 다르다. 계층을 강제하는 게 아니라 한눈에 크기를 읽히게 */
-.d0 .nm{font-size:16.5px;font-weight:600;letter-spacing:-.01em}
-.d1 .nm{font-size:14.5px;font-weight:500}
-.d2 .nm{font-size:13.5px}
-.d3 .nm,.d4 .nm,.d5 .nm{font-size:13px;color:var(--ink2)}
-.d0{margin-top:16px}
-.d1{margin-top:2px}
-
-/* 접힌 줄의 요약 — 접혀 있어도 안에 뭐가 있는지 안다 */
-.sum{display:flex;align-items:center;gap:8px;flex:0 0 auto;font-size:11.5px;color:var(--ink3);padding-top:3px}
-.sum .bar{width:44px;height:3px;border-radius:2px;background:var(--sunk);overflow:hidden}
-.sum .bar i{display:block;height:100%;background:var(--made)}
-.sum .q{color:var(--think);font-weight:600}
-.row:hover .sum{color:var(--ink2)}
-
-.deeper{margin-left:26px;border-left:1px solid var(--line);padding-left:2px}
-
-.tip{
-  display:flex;align-items:center;gap:16px;padding:8px 22px;flex:0 0 auto;
-  border-top:1px solid var(--line);background:var(--card);
-  font-size:11.5px;color:var(--ink3);overflow-x:auto;
+/* 작아지면 한 줄 칩으로, 더 작아지면 점으로 — 줄여서 보여주되 없애지 않는다 */
+.chip{
+  position:absolute;display:flex;align-items:center;gap:5px;background:var(--card);
+  border:1px solid var(--line);border-left:3px solid var(--c,var(--line2));
+  border-radius:7px;padding:0 7px;overflow:hidden;font-size:12px;color:var(--ink2);
 }
-.tip b{color:var(--ink2);font-weight:600}
-.tip .sp{flex:1}
-kbd{
-  font-family:inherit;font-size:11px;background:var(--sunk);border:1px solid var(--line2);
-  border-bottom-width:2px;border-radius:4px;padding:0 4px;color:var(--ink2);
+.chip:hover{border-color:var(--line2)}
+.chip .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  outline:none;-webkit-user-select:text;user-select:text;cursor:text}
+.chip .n{font-size:10.5px;color:var(--ink4);flex:0 0 auto}
+.chip.sel{border-color:var(--ink)}
+.chip.drop{border-color:var(--drop);box-shadow:0 0 0 2px rgba(44,138,78,.28)}
+.chip.drag{opacity:.35}
+.pip{position:absolute;border-radius:50%;background:var(--c,var(--line2));cursor:pointer}
+.pip:hover{box-shadow:0 0 0 3px rgba(0,0,0,.08)}
+
+.plus{
+  position:absolute;border:1px dashed var(--line2);border-radius:9px;color:var(--ink4);
+  display:grid;place-items:center;font-size:12px;background:transparent;
+}
+.plus:hover{background:var(--sunk);color:var(--ink2)}
+
+.empty{
+  position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+  color:var(--ink3);font-size:13px;line-height:1.9;
 }
 
-/* =============================== 겹창 =============================== */
-.scrim{position:fixed;inset:0;background:rgba(20,22,20,.2);z-index:40;display:none}
+.ft{display:flex;align-items:center;gap:14px;padding:7px 18px;flex:0 0 auto;
+  border-top:1px solid var(--line);background:var(--card);font-size:11.5px;color:var(--ink3)}
+.ft .sp{flex:1}
+.ft b{color:var(--ink2);font-weight:600}
+
+/* ============================== 겹창 ============================== */
+.scrim{position:fixed;inset:0;background:rgba(18,20,18,.2);z-index:40;display:none}
 .scrim.on{display:block}
-.dlg{
-  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:41;
-  width:min(600px,94vw);max-height:84vh;background:var(--card);
-  border:1px solid var(--line2);border-radius:14px;
-  box-shadow:0 24px 60px -22px rgba(20,24,20,.45);
-  display:none;flex-direction:column;
-}
+.dlg{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:41;
+  width:min(600px,94vw);max-height:84vh;background:var(--card);border:1px solid var(--line2);
+  border-radius:14px;box-shadow:0 24px 60px -22px rgba(18,22,18,.45);display:none;flex-direction:column}
 .dlg.on{display:flex}
 .dlg h3{margin:0;padding:17px 20px 0;font-size:15px;font-weight:600}
 .dlg .de{padding:7px 20px 0;color:var(--ink2);font-size:12.5px;line-height:1.6;white-space:pre-wrap}
 .dlg .bd{padding:14px 20px 0;overflow-y:auto;flex:1;min-height:0}
-.dlg .bd .origin{white-space:pre-wrap;font-size:13.5px;line-height:1.8;color:var(--ink)}
+.dlg .bd .origin{white-space:pre-wrap;font-size:13.5px;line-height:1.8;-webkit-user-select:text;user-select:text}
 .dlg textarea{width:100%;min-height:170px;resize:vertical;border:1px solid var(--line);
   border-radius:9px;padding:10px 11px;background:var(--paper);outline:none;
-  font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.6}
-.dlg .ft{display:flex;gap:8px;justify-content:flex-end;padding:15px 20px 17px}
-.dlg .ft .sp{flex:1}
+  font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.6;
+  -webkit-user-select:text;user-select:text}
+.dlg .ft2{display:flex;gap:8px;justify-content:flex-end;padding:15px 20px 17px}
+.dlg .ft2 .sp{flex:1}
 
-.toast{
-  position:fixed;left:50%;bottom:56px;transform:translate(-50%,12px);z-index:60;
+.toast{position:fixed;left:50%;bottom:52px;transform:translate(-50%,12px);z-index:60;
   background:var(--ink);color:#fff;padding:10px 17px;border-radius:10px;font-size:12.5px;
-  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:88vw;text-align:center;
-}
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:88vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body data-at="list">
 
-<!-- ============================ 목록 ============================ -->
+<!-- ================================ 목록 ================================ -->
 <div class="screen" id="list">
   <div class="lwrap">
     <h1 class="ltitle">상상을 현실로</h1>
-    <p class="lsub">머릿속에 있는 걸 밖에 꺼내놓고, 보면서 생각하는 곳</p>
+    <p class="lsub">머릿속에 있는 걸 밖에 펼쳐놓고, 보면서 생각하는 곳</p>
 
     <div class="jot">
       <h3>뭘 만들고 싶은가요?</h3>
       <p>줄바꿈만 해두면 그게 그대로 첫 뼈대가 됩니다. 정리해서 쓰지 않아도 됩니다.</p>
-      <textarea id="jotIn" placeholder="이명 겪는 사람용 건기식 몰&#10;상세페이지&#10;리뷰 모으기&#10;가격은 아직 모르겠음"></textarea>
+      <textarea id="jotIn" placeholder="이명 겪는 사람용 건기식 몰&#10;상세페이지&#10;  사진 찍기&#10;  글 쓰기&#10;리뷰 모으기&#10;가격은 아직 모르겠음"></textarea>
       <div class="jotfoot">
         <span class="tip">Ctrl+Enter</span>
-        <button class="btn pri" id="jotGo">꺼내놓기</button>
+        <button class="btn pri" id="jotGo">펼쳐놓기</button>
       </div>
     </div>
 
     <div class="lsect">
-      <h4>지금 굴리는 것 <span class="sp"></span>
+      <h4>지금 굴리는 것<span class="sp"></span>
         <button class="btn ghost sm" id="btnImport">첫 판에서 가져오기</button>
         <button class="btn ghost sm" id="btnBackup">백업</button>
         <button class="btn ghost sm" id="btnRestore">되살리기</button>
@@ -257,38 +241,30 @@ kbd{
   </div>
 </div>
 
-<!-- ============================ 작업 화면 ============================ -->
-<div class="screen" id="work">
+<!-- ================================ 조망판 ================================ -->
+<div class="screen" id="board">
   <div class="hd">
     <button class="btn ghost sm" id="toList">← 목록</button>
-    <div class="t" id="pjTitle" contenteditable="plaintext-only" spellcheck="false"></div>
-    <span class="sp"></span>
+    <nav class="path" id="path"></nav>
     <div class="tally" id="tally"></div>
     <button class="btn ghost sm" id="btnOrigin">처음 적은 글</button>
-    <button class="btn ghost sm" id="btnAll">모두 펼치기</button>
   </div>
   <div class="gauge"><i id="gauge"></i></div>
-
-  <div class="sheet" id="sheet"><div class="inner" id="inner"></div></div>
-
-  <div class="tip">
-    <span><kbd>Enter</kbd> 새 줄</span>
-    <span><kbd>Tab</kbd> 안으로 · <kbd>Shift+Tab</kbd> 밖으로</span>
-    <span><kbd>Alt+↑↓</kbd> 순서</span>
-    <span><kbd>Shift+Enter</kbd> 생각 적기</span>
-    <span><kbd>Ctrl+Enter</kbd> 💭→✓→■</span>
+  <div class="stage" id="stage"><div class="canvas" id="canvas"></div></div>
+  <div class="ft">
+    <span>상자를 <b>끌어서 다른 상자에 넣으면</b> 그 안으로 · <b>위 주소줄에 떨구면</b> 그 층으로 꺼내집니다 — 아무것도 끊기지 않습니다</span>
     <span class="sp"></span>
-    <span><b>옮겨도 아무것도 끊기지 않습니다.</b> 아래 달린 것은 따라옵니다</span>
+    <span>글자를 눌러 바로 고치기 · 동그라미를 눌러 상태 바꾸기 · <b>⤢</b> 로 그 안만 크게</span>
   </div>
 </div>
 
-<!-- ============================ 겹창 ============================ -->
+<!-- ================================ 겹창 ================================ -->
 <div class="scrim" id="scrim"></div>
 <div class="dlg" id="dlg">
   <h3 id="dTitle"></h3>
   <div class="de" id="dDesc"></div>
   <div class="bd" id="dBody"></div>
-  <div class="ft">
+  <div class="ft2">
     <span class="sp"></span>
     <button class="btn" id="dNo">닫기</button>
     <button class="btn pri" id="dYes">확인</button>
@@ -299,37 +275,27 @@ kbd{
 <script>
 "use strict";
 /* ===========================================================================
-   저장
-
-   첫 판(설계도 캔버스)은 localStorage["sulgyedo.v3"] 를 쓴다.
-   같은 file:// 이라 저장 칸을 공유하므로, 여기서 그 칸에 쓰면 원본이 덮인다.
-   이 판은 자기 칸만 쓰고 첫 판 것은 읽기만 한다. 나란히 켜놓고 비교할 수 있어야 한다.
+   저장 — 첫 판과 저장 칸을 공유하므로(같은 file://) 자기 칸만 쓰고 첫 판 것은 읽기만 한다
    =========================================================================== */
-var KEY = "sangsang3", OLDKEY = "sulgyedo.v3";
+var KEY = "sangsang4", OLDKEY = "sulgyedo.v3";
 
-/* 상태 셋. 본질 문장에서 그대로 나온 것이다 —
-   「무엇이 아직 미정인지 / 무엇을 결정했는지 / 어디까지 만들었는지」  */
+/* 상태 셋. 「무엇이 아직 미정인지 / 무엇을 결정했는지 / 어디까지 만들었는지」 그대로다 */
 var STS = ["think","set","made"];
-var SIGN = { think:"💭", set:"✓", made:"■" };
-var LABEL= { think:"아직 생각 중", set:"정했음", made:"만들어짐" };
+var LABEL = { think:"아직 생각 중", set:"정했음", made:"만들어짐" };
+var COLOR = { think:"var(--think)", set:"var(--set)", made:"var(--made)" };
 
-var APP = null;      /* {projects:[]} */
-var PJ  = null;      /* 지금 열어둔 것 */
-var CUR = null;      /* 커서가 있는 줄 id */
+var APP=null, PJ=null, FOCUS=null, SEL=null;
 
 function uid(p){ return (p||"n") + Math.random().toString(36).slice(2,9); }
 function now(){ return Date.now(); }
+function mkNode(name, state){ return { id:uid(), name:name||"", state:state||"think", note:"", kids:[] }; }
 
-function mkNode(name, state){
-  return { id:uid(), name:name||"", state:state||"think", note:"", kids:[], fold:false };
-}
 function stampNode(n){
   if(!n.id) n.id = uid();
   if(typeof n.name !== "string") n.name = "";
   if(STS.indexOf(n.state) < 0) n.state = "think";
   if(typeof n.note !== "string") n.note = "";
   if(!Array.isArray(n.kids)) n.kids = [];
-  if(typeof n.fold !== "boolean") n.fold = false;
   n.kids.forEach(stampNode);
   return n;
 }
@@ -357,41 +323,51 @@ function load(){
   return null;
 }
 
-/* --------------------------- 나무 훑기 --------------------------- */
-/* 부모를 가리키는 번호가 아니라 통째로 품는 구조다.
-   그래야 옮길 때 아래 달린 것이 저절로 따라오고, 끊길 선이 아예 없다. */
-function walk(list, fn, depth, parent){
-  depth = depth || 0;
-  (list||[]).forEach(function(n, i){
-    fn(n, depth, list, i, parent || null);
-    walk(n.kids, fn, depth + 1, n);
-  });
+/* ------------------------------ 나무 ------------------------------
+   부모 번호를 가리키는 방식이 아니라 통째로 품는 방식이다.
+   그래서 옮길 때 아래 달린 것이 저절로 따라오고, 끊길 선이 애초에 없다. */
+function roots(){ return PJ ? PJ.roots : []; }
+function find(id, list, parent){
+  list = list || roots();
+  for(var i=0;i<list.length;i++){
+    if(list[i].id === id) return { node:list[i], list:list, i:i, parent:parent||null };
+    var r = find(id, list[i].kids, list[i]);
+    if(r) return r;
+  }
+  return null;
 }
-function find(id){
-  var hit = null;
-  walk(PJ.roots, function(n, d, list, i, parent){
-    if(n.id === id) hit = { node:n, depth:d, list:list, i:i, parent:parent };
-  });
+function chainTo(id){
+  var out = [];
+  (function dive(list, chain){
+    list.forEach(function(n){
+      if(n.id === id){ out = chain.slice(); }
+      dive(n.kids, chain.concat([n]));
+    });
+  })(roots(), []);
+  return out;
+}
+function all(list){
+  var out = [];
+  (function dive(l){ l.forEach(function(n){ out.push(n); dive(n.kids); }); })(list || roots());
+  return out;
+}
+function isInside(a, b){                      /* b 가 a 의 자손인가 (자기 안에 못 넣게) */
+  var hit = false;
+  (function dive(l){ l.forEach(function(n){ if(n.id === b) hit = true; dive(n.kids); }); })(a.kids);
   return hit;
 }
-function countIn(n){
+function kidsOf(id){ if(!id) return roots(); var f = find(id); return f ? f.node.kids : []; }
+function count(list){
   var c = { think:0, set:0, made:0, total:0 };
-  walk(n.kids, function(k){ c[k.state]++; c.total++; });
+  all(list).forEach(function(n){ c[n.state]++; c.total++; });
   return c;
 }
-function tallyAll(){
-  var c = { think:0, set:0, made:0, total:0 };
-  walk(PJ.roots, function(n){ c[n.state]++; c.total++; });
-  return c;
-}
-/* 「어디까지 만들었는지」 — 안에 있는 것까지 포함해 만들어진 비율 */
-function madeRate(n){
-  var c = countIn(n);
+function rate(n){
+  var c = count(n.kids);
   if(!c.total) return n.state === "made" ? 1 : 0;
   return c.made / c.total;
 }
 
-/* --------------------------- 화면 전환 --------------------------- */
 function go(w){ document.body.dataset.at = w; }
 function toast(m){
   var t = document.getElementById("toast");
@@ -409,321 +385,471 @@ function renderList(){
     box.innerHTML = '<div class="none">아직 없습니다. 위 칸에 생각나는 대로 적어보세요.</div>';
     return;
   }
-  APP.projects.slice().sort(function(a,b){ return (b.updatedAt||0) - (a.updatedAt||0); })
-    .forEach(function(p){
-      var was = PJ; PJ = p;
-      var c = tallyAll(); PJ = was;
-
-      var wrap = document.createElement("div");
-      wrap.style.position = "relative";
+  APP.projects.slice().sort(function(a,b){ return (b.updatedAt||0)-(a.updatedAt||0); })
+   .forEach(function(p){
+      var was = PJ; PJ = p; var c = count(p.roots); PJ = was;
+      var wrap = document.createElement("div"); wrap.style.position = "relative";
       var b = document.createElement("button"); b.className = "pj";
       var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = p.title;
       var mi = document.createElement("span"); mi.className = "mini";
-      [["think",c.think],["set",c.set],["made",c.made]].forEach(function(x){
-        if(!x[1]) return;
+      STS.forEach(function(k){
+        if(!c[k]) return;
         var s = document.createElement("span");
-        s.style.color = "var(--" + x[0] + ")";
-        s.innerHTML = SIGN[x[0]] + " <b>" + x[1] + "</b>";
+        s.style.color = COLOR[k]; s.title = LABEL[k];
+        s.textContent = (k === "think" ? "생각 " : k === "set" ? "정함 " : "만듦 ") + c[k];
         mi.appendChild(s);
       });
       if(!c.total){ var e = document.createElement("span"); e.textContent = "비어 있음"; mi.appendChild(e); }
       b.appendChild(nm); b.appendChild(mi);
       b.onclick = function(){ open(p.id); };
-
       var x = document.createElement("button");
       x.className = "pjx"; x.textContent = "✕"; x.title = "지우기";
-      x.style.cssText += "position:absolute;right:12px;top:14px";
       x.onclick = function(ev){
         ev.stopPropagation();
         dlg({ title:"「" + p.title + "」 지우기", desc:"되돌릴 수 없습니다.", yes:"지우기",
               run:function(){ APP.projects = APP.projects.filter(function(q){ return q.id !== p.id; });
                               save(false); renderList(); } });
       };
-      wrap.appendChild(b); wrap.appendChild(x);
-      box.appendChild(wrap);
-    });
+      wrap.appendChild(b); wrap.appendChild(x); box.appendChild(wrap);
+   });
 }
-
-/* 적은 글을 그대로 첫 뼈대로 만든다.
-   「밖으로 꺼낸다 → 대략적인 구조로 만든다」를 한 동작으로 붙였다.
-   들여쓴 줄은 들여쓴 대로 안에 넣는다. 정리해서 쓸 필요가 없어야 한다. */
+/* 적은 글이 그대로 첫 뼈대가 된다. 들여쓴 줄은 안으로 들어간다 */
 function fromText(text){
-  var lines = String(text||"").split("\n");
-  var roots = [], stack = [];
-  lines.forEach(function(raw){
+  var out = [], stack = [];
+  String(text||"").split("\n").forEach(function(raw){
     if(!raw.trim()) return;
-    var indent = (raw.match(/^[\t 　]*/)[0] || "");
-    var depth = Math.floor(indent.replace(/\t/g, "  ").replace(/　/g, " ").length / 2);
-    var name = raw.trim().replace(/^[-*•·]\s*/, "");
-    var n = mkNode(name, "think");
+    var ind = (raw.match(/^[\t 　]*/)[0] || "").replace(/\t/g,"  ").replace(/　/g," ");
+    var depth = Math.floor(ind.length / 2);
+    var n = mkNode(raw.trim().replace(/^[-*•·]\s*/, ""), "think");
     while(stack.length > depth) stack.pop();
-    if(!stack.length){ roots.push(n); }
-    else { stack[stack.length - 1].kids.push(n); }
+    if(!stack.length) out.push(n); else stack[stack.length-1].kids.push(n);
     stack.push(n);
   });
-  return roots;
+  return out;
 }
 
 /* =========================================================================
-   작업 화면 — 이 화면 하나가 전부다
+   조망판
    ========================================================================= */
-/* 열자마자 커서를 박지 않는다. 커서가 있는 줄은 생각까지 펼쳐지는데,
-   그러면 열자마자 한 줄이 글 벽이 되어 전체 구성이 안 보인다.
-   「본다 → 생각한다 → 바꾼다」 순서대로, 보는 게 먼저다. */
-function open(id, focus){
+function open(id){
   PJ = APP.projects.filter(function(p){ return p.id === id; })[0];
   if(!PJ) return;
-  stampPj(PJ);
-  CUR = null;
-  go("work"); render();
-  if(focus && PJ.roots.length) setTimeout(function(){ caretTo(PJ.roots[0].id, "end"); }, 40);
+  stampPj(PJ); FOCUS = null; SEL = null;
+  go("board"); draw();
 }
-
-function render(){
-  document.getElementById("pjTitle").textContent = PJ.title;
-
-  var c = tallyAll();
-  var tl = document.getElementById("tally");
-  tl.innerHTML = "";
+function draw(){
+  if(!PJ) return;
+  drawPath(); drawTally(); layout();
+}
+function drawPath(){
+  var p = document.getElementById("path");
+  p.innerHTML = "";
+  var chain = FOCUS ? chainTo(FOCUS).concat([find(FOCUS).node]) : [];
+  add(PJ.title, function(){ FOCUS = null; draw(); }, chain.length === 0, "");
+  chain.forEach(function(n, i){
+    var s = document.createElement("span"); s.className = "sep"; s.textContent = "›"; p.appendChild(s);
+    add(n.name || "이름 없음", function(){ FOCUS = n.id; draw(); }, i === chain.length - 1, n.id);
+  });
+  function add(t, fn, nowHere){
+    var b = document.createElement("button");
+    b.textContent = t;
+    /* 끌어다 여기 떨구면 그 층으로 올라간다.
+       상자가 화면을 꽉 채우므로 「빈 곳」이 없어서, 밖으로 꺼낼 길이 따로 필요하다 */
+    b.dataset.nid = arguments[3] || "";
+    if(nowHere) b.className = "now"; else b.onclick = fn;
+    p.appendChild(b);
+  }
+}
+function drawTally(){
+  var c = count(roots());
+  var t = document.getElementById("tally");
+  t.innerHTML = "";
   STS.forEach(function(k){
-    var s = document.createElement("span");
-    s.style.color = c[k] ? "var(--" + k + ")" : "var(--ink4)";
-    s.title = LABEL[k];
-    s.textContent = SIGN[k] + " " + c[k];
-    tl.appendChild(s);
+    var s = document.createElement("span"); s.title = LABEL[k];
+    var i = document.createElement("i"); i.style.background = COLOR[k];
+    if(k === "think") i.style.borderRadius = "50%";
+    s.appendChild(i);
+    s.appendChild(document.createTextNode(c[k]));
+    t.appendChild(s);
   });
-  document.getElementById("gauge").style.width =
-    (c.total ? Math.round(c.made / c.total * 100) : 0) + "%";
+  document.getElementById("gauge").style.width = (c.total ? Math.round(c.made/c.total*100) : 0) + "%";
+}
 
-  var inner = document.getElementById("inner");
-  inner.innerHTML = "";
-  if(!PJ.roots.length){
-    PJ.roots.push(mkNode("", "think"));
-    CUR = PJ.roots[0].id;
+/* ---------------------------------------------------------------------------
+   자리 잡기 — 사람이 배치하지 않는다. 면적을 나눠 갖는다.
+   그래서 아무리 많아져도 화면을 넘지 않고, 스크롤이 없다.
+   칸이 작아지면 상자 → 한 줄 칩 → 점 으로 줄어들되 사라지지는 않는다.
+   --------------------------------------------------------------------------- */
+var PLACED = [];
+function layout(){
+  var st = document.getElementById("stage");
+  var cv = document.getElementById("canvas");
+  cv.innerHTML = ""; PLACED = [];
+  var W = st.clientWidth - 32, H = st.clientHeight - 32;
+  if(W < 40 || H < 40) return;
+
+  var list = kidsOf(FOCUS);
+  if(!list.length){
+    var e = document.createElement("div");
+    e.className = "empty";
+    e.innerHTML = (FOCUS ? "여기는 아직 안 나눴습니다." : "아직 비어 있습니다.") +
+      "<br><span style='color:var(--ink4);font-size:12px'>빈 곳을 누르면 새 상자가 생깁니다.</span>";
+    cv.appendChild(e);
+    return;
   }
-  build(PJ.roots, inner, 0);
-  markPath();
+  place(list, 0, 0, W, H, 0);
+  PLACED.forEach(function(p){ cv.appendChild(p.el); });
+  addPlus();
+}
+/* 남는 자리에 「＋」 하나. 빈 곳을 눌러도 된다 */
+function addPlus(){
+  var st = document.getElementById("stage");
+  var W = st.clientWidth - 32, H = st.clientHeight - 32;
+  var last = null;
+  PLACED.forEach(function(p){ if(p.depth === 0) last = p; });
+  if(!last) return;
+  var x = last.x + last.w + 12, y = last.y, w = 118, h = Math.min(52, last.h);
+  if(x + w > W){ x = last.x; y = last.y + last.h + 12; }
+  if(y + h > H) return;
+  var b = document.createElement("button");
+  b.className = "plus";
+  b.style.cssText = "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px";
+  b.textContent = "＋ 더하기";
+  b.onclick = function(){ addKid(FOCUS); };
+  document.getElementById("canvas").appendChild(b);
 }
 
-function build(list, host, depth){
-  var box = host;
-  if(depth > 0){ box = document.createElement("div"); box.className = "deeper"; host.appendChild(box); }
-  list.forEach(function(n){
-    box.appendChild(rowEl(n, depth));
-    if(n.kids.length && !n.fold) build(n.kids, box, depth + 1);
-  });
-}
-
-function rowEl(n, depth){
-  var row = document.createElement("div");
-  row.className = "row d" + Math.min(depth, 5) + (CUR === n.id ? " on" : "");
-  row.dataset.id = n.id;
-
-  /* 펼침 */
-  var tw = document.createElement("button");
-  tw.className = "tw" + (n.kids.length ? (n.fold ? " fold" : "") : " leaf");
-  tw.textContent = n.fold ? "▶" : "▼";
-  tw.title = n.fold ? "펼치기" : "접기";
-  tw.onmousedown = function(e){ e.preventDefault(); };
-  tw.onclick = function(){ n.fold = !n.fold; save(false); render(); };
-  row.appendChild(tw);
-
-  /* 상태 — 눌러서 돌린다. 창을 열지 않는다 */
-  var st = document.createElement("button");
-  st.className = "st " + n.state;
-  st.textContent = SIGN[n.state];
-  st.title = LABEL[n.state] + " — 눌러서 바꾸기";
-  st.onmousedown = function(e){ e.preventDefault(); };
-  st.onclick = function(){ cycle(n); };
-  row.appendChild(st);
-
-  /* 이름 — 보고 있는 그 자리에서 바로 고친다 */
-  var mid = document.createElement("div"); mid.className = "mid";
-  var nm = document.createElement("div");
-  nm.className = "nm"; nm.contentEditable = "plaintext-only"; nm.spellcheck = false;
-  nm.dataset.ph = depth === 0 ? "무엇을 만드나" : "무엇이 필요한가";
-  nm.textContent = n.name;
-  nm.addEventListener("input", function(){ n.name = nm.textContent; save(); });
-  nm.addEventListener("focus", function(){ setCur(n.id); });
-  nm.addEventListener("keydown", function(e){ onKey(e, n, "name"); });
-  mid.appendChild(nm);
-
-  /* 생각 — 같은 줄에 붙어 있다. 따로 열지 않는다 */
-  var note = document.createElement("div");
-  note.className = "note"; note.contentEditable = "plaintext-only"; note.spellcheck = false;
-  note.textContent = n.note;
-  note.addEventListener("input", function(){ n.note = note.textContent; save(); });
-  note.addEventListener("focus", function(){ setCur(n.id); });
-  note.addEventListener("keydown", function(e){ onKey(e, n, "note"); });
-  mid.appendChild(note);
-  row.appendChild(mid);
-
-  /* 접혀 있어도 안에 뭐가 있는지 안다 */
-  if(n.kids.length){
-    var c = countIn(n);
-    var sum = document.createElement("div"); sum.className = "sum";
-    if(n.fold){
-      var t = document.createElement("span");
-      t.textContent = "안에 " + c.total + "개";
-      sum.appendChild(t);
+function place(list, x, y, w, h, depth){
+  var n = list.length;
+  var GAP = depth === 0 ? 12 : (depth === 1 ? 7 : 5);
+  /* 화면 비율을 보고 칸 수를 정한다. 정사각에 가까울수록 읽기 쉽다 */
+  var cols = Math.max(1, Math.min(n, Math.round(Math.sqrt(n * (w / Math.max(h, 1)) * 0.62))));
+  var rowN = Math.ceil(n / cols);
+  var base = Math.floor(n / rowN), extra = n % rowN;
+  var ch = (h - GAP * (rowN - 1)) / rowN;
+  var idx = 0, ry = y;
+  for(var r = 0; r < rowN; r++){
+    var cnt = base + (r < extra ? 1 : 0);
+    if(cnt <= 0) continue;
+    var cw = (w - GAP * (cnt - 1)) / cnt;
+    var rx = x;
+    for(var c = 0; c < cnt; c++){
+      var node = list[idx++];
+      emit(node, rx, ry, cw, ch, depth);
+      rx += cw + GAP;
     }
-    if(c.think){ var q = document.createElement("span"); q.className = "q"; q.textContent = "💭 " + c.think; sum.appendChild(q); }
-    var bar = document.createElement("div"); bar.className = "bar";
-    var bi = document.createElement("i"); bi.style.width = Math.round(madeRate(n) * 100) + "%";
-    bar.appendChild(bi); sum.appendChild(bar);
-    var r = document.createElement("span"); r.textContent = c.made + "/" + c.total;
-    sum.appendChild(r);
-    row.appendChild(sum);
+    ry += ch + GAP;
   }
-  return row;
 }
+function emit(node, x, y, w, h, depth){
+  var mode = (w < 70 || h < 22) ? "pip" : ((h < 54 || w < 104) ? "chip" : "box");
+  var el, rec = { node:node, x:x, y:y, w:w, h:h, depth:depth, mode:mode };
 
-/* 지금 줄과 그 조상을 표시한다.
-   제자리에서 펼쳐지므로 「이 부분이 전체에서 어디인지」를 주소줄로 알려줄 필요가 없다. */
-function markPath(){
-  var path = {};
-  (function dive(list, chain){
-    list.forEach(function(n){
-      if(n.id === CUR) chain.forEach(function(x){ path[x] = 1; });
-      dive(n.kids, chain.concat([n.id]));
-    });
-  })(PJ.roots, []);
-  document.querySelectorAll(".row").forEach(function(r){
-    r.classList.toggle("anc", !!path[r.dataset.id]);
-    r.classList.toggle("on", r.dataset.id === CUR);
+  if(mode === "pip"){
+    el = document.createElement("div");
+    el.className = "pip";
+    var s = Math.max(6, Math.min(w, h, 12));
+    el.style.cssText = "left:" + (x + (w - s)/2) + "px;top:" + (y + (h - s)/2) + "px;width:" + s + "px;height:" + s + "px";
+    el.style.setProperty("--c", COLOR[node.state]);
+    el.title = (node.name || "이름 없음") + " — " + LABEL[node.state];
+    el.onclick = function(ev){ ev.stopPropagation(); FOCUS = parentIdOf(node.id); SEL = node.id; draw(); };
+  }
+  else if(mode === "chip"){
+    el = document.createElement("div");
+    el.className = "chip" + (SEL === node.id ? " sel" : "");
+    el.style.cssText = "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px";
+    el.style.setProperty("--c", COLOR[node.state]);
+    var d = document.createElement("span"); d.className = "dot";
+    d.style.setProperty("--c", COLOR[node.state]); d.title = LABEL[node.state];
+    d.onclick = function(ev){ ev.stopPropagation(); cycle(node); };
+    var t = document.createElement("span"); t.className = "t";
+    t.contentEditable = "plaintext-only"; t.spellcheck = false; t.textContent = node.name;
+    t.title = node.name;
+    bindName(t, node);
+    el.appendChild(d); el.appendChild(t);
+    if(node.kids.length){
+      var k = document.createElement("span"); k.className = "n"; k.textContent = node.kids.length;
+      el.appendChild(k);
+    }
+  }
+  else {
+    el = document.createElement("div");
+    el.className = "bx d" + Math.min(depth, 2) + (SEL === node.id ? " sel" : "");
+    el.style.cssText = "left:" + x + "px;top:" + y + "px;width:" + w + "px;height:" + h + "px";
+    el.style.setProperty("--c", COLOR[node.state]);
+
+    var hd = document.createElement("div"); hd.className = "bh";
+    var dot = document.createElement("span"); dot.className = "dot";
+    dot.style.setProperty("--c", COLOR[node.state]); dot.title = LABEL[node.state] + " — 눌러서 바꾸기";
+    dot.onclick = function(ev){ ev.stopPropagation(); cycle(node); };
+    var nm = document.createElement("div"); nm.className = "nm";
+    nm.contentEditable = "plaintext-only"; nm.spellcheck = false; nm.textContent = node.name;
+    nm.title = node.name;                    /* 좁아서 잘렸을 때 전체를 볼 수 있게 */
+    bindName(nm, node);
+    hd.appendChild(dot); hd.appendChild(nm);
+
+    if(node.kids.length){
+      var c = count(node.kids);
+      var mk = document.createElement("span"); mk.className = "mark";
+      mk.innerHTML = "<b>" + c.made + "</b>/" + c.total;
+      var bar = document.createElement("div"); bar.className = "bar";
+      var bi = document.createElement("i"); bi.style.width = Math.round(rate(node)*100) + "%";
+      bar.appendChild(bi);
+      hd.appendChild(bar); hd.appendChild(mk);
+    }
+    var z = document.createElement("button");
+    z.className = "zoom"; z.textContent = "⤢"; z.title = "이 안만 크게 보기";
+    z.onclick = function(ev){ ev.stopPropagation(); FOCUS = node.id; SEL = null; draw(); };
+    hd.appendChild(z);
+    el.appendChild(hd);
+
+    if(!node.kids.length && node.note && h > 58){
+      var nt = document.createElement("div"); nt.className = "bnote";
+      nt.contentEditable = "plaintext-only"; nt.spellcheck = false; nt.textContent = node.note;
+      nt.addEventListener("input", function(){ node.note = nt.textContent; save(); });
+      nt.addEventListener("mousedown", function(ev){ ev.stopPropagation(); });
+      el.appendChild(nt);
+    }
+  }
+
+  el.dataset.id = node.id;
+  if(mode !== "pip") bindDrag(el, node);
+  rec.el = el;
+  /* 부모를 자식보다 «먼저» 등록해야 한다.
+     나중에 등록하면 화면에 나중에 붙어서 부모가 자식을 덮어버린다. */
+  PLACED.push(rec);
+
+  /* 안에 든 것 — 자리가 남을 때만 그린다. 없어서 안 보이는 게 아니라 좁아서 접힌 것이다 */
+  if(mode === "box" && node.kids.length){
+    var HEAD = 30, innerH = h - HEAD - 8;
+    if(innerH > 26 && w > 88){
+      place(node.kids, x + 8, y + HEAD, w - 16, innerH, depth + 1);
+    }else{
+      var mk2 = document.createElement("div");
+      mk2.className = "bnote";
+      mk2.textContent = "안에 " + all(node.kids).length + "개";
+      el.appendChild(mk2);
+    }
+  }
+}
+function parentIdOf(id){
+  var ch = chainTo(id);
+  return ch.length ? ch[ch.length-1].id : null;
+}
+function bindName(el, node){
+  el.addEventListener("input", function(){ node.name = el.textContent; save(); });
+  el.addEventListener("focus", function(){ SEL = node.id; });
+  /* 여기서 mousedown 을 막으면 안 된다. 상자 머리의 대부분이 이름이라
+     막아버리면 끌 곳이 사라진다. 누르기/끌기 구분은 bindDrag 이 한다. */
+  el.addEventListener("keydown", function(ev){
+    if(ev.key === "Enter"){ ev.preventDefault(); el.blur(); addSibling(node); }
+    if(ev.key === "Escape"){ ev.preventDefault(); el.blur(); }
   });
 }
-function setCur(id){ if(CUR === id) return; CUR = id; markPath(); }
 
-function caretTo(id, where, field){
-  var row = document.querySelector('.row[data-id="' + id + '"]');
-  if(!row) return;
-  var el = row.querySelector(field === "note" ? ".note" : ".nm");
-  if(!el) return;
-  el.focus();
-  var r = document.createRange(), s = window.getSelection();
-  r.selectNodeContents(el);
-  r.collapse(where === "start");     /* collapse(true) 가 「맨 앞」이다. 뒤집어 쓰면 글 앞에 끼어 쓰인다 */
-  s.removeAllRanges(); s.addRange(r);
-  CUR = id; markPath();
-  var rc = row.getBoundingClientRect(), sh = document.getElementById("sheet").getBoundingClientRect();
-  if(rc.top < sh.top + 20 || rc.bottom > sh.bottom - 20) row.scrollIntoView({ block:"center" });
+/* ------------------------------ 고치기 (모드 없음) ------------------------------ */
+function cycle(n){ n.state = STS[(STS.indexOf(n.state)+1)%3]; save(); draw(); }
+function addKid(parentId){
+  var fresh = mkNode("", "think");
+  if(parentId){ var f = find(parentId); if(!f) return; f.node.kids.push(fresh); }
+  else roots().push(fresh);
+  save(); draw(); focusName(fresh.id);
 }
-
-/* --------------------------- 구조 바꾸기 ---------------------------
-   전부 그 자리에서 일어난다. 창이 열리지 않고, 아무것도 끊기지 않는다. */
-function cycle(n){
-  n.state = STS[(STS.indexOf(n.state) + 1) % 3];
-  save(); render(); caretTo(n.id, "end");
-}
-function addAfter(n){
+function addSibling(n){
   var f = find(n.id); if(!f) return;
   var fresh = mkNode("", "think");
-  /* 펼쳐진 채로 안에 뭐가 있으면, 새 줄은 그 안 맨 앞이 자연스럽다 */
-  if(n.kids.length && !n.fold) n.kids.unshift(fresh);
-  else f.list.splice(f.i + 1, 0, fresh);
-  save(); render(); caretTo(fresh.id, "end");
+  f.list.splice(f.i + 1, 0, fresh);
+  save(); draw(); focusName(fresh.id);
 }
-function indent(n){
-  var f = find(n.id); if(!f || f.i === 0) return;          /* 위 형제가 없으면 못 들어간다 */
-  var prev = f.list[f.i - 1];
-  f.list.splice(f.i, 1);
-  prev.fold = false;
-  prev.kids.push(n);                                       /* 아래 달린 것은 통째로 따라온다 */
-  save(); render(); caretTo(n.id, "end");
-}
-function outdent(n){
-  var f = find(n.id); if(!f || !f.parent) return;           /* 맨 바깥이면 그만 */
-  var pf = find(f.parent.id); if(!pf) return;
-  f.list.splice(f.i, 1);
-  pf.list.splice(pf.i + 1, 0, n);
-  save(); render(); caretTo(n.id, "end");
-}
-function moveUp(n){
-  var f = find(n.id); if(!f || f.i === 0) return;
-  f.list.splice(f.i, 1); f.list.splice(f.i - 1, 0, n);
-  save(); render(); caretTo(n.id, "end");
-}
-function moveDown(n){
-  var f = find(n.id); if(!f || f.i >= f.list.length - 1) return;
-  f.list.splice(f.i, 1); f.list.splice(f.i + 1, 0, n);
-  save(); render(); caretTo(n.id, "end");
+function focusName(id){
+  setTimeout(function(){
+    var el = document.querySelector('[data-id="' + id + '"]');
+    if(!el) return;
+    var t = el.querySelector(".nm") || el.querySelector(".t");
+    if(!t) return;
+    t.focus();
+    var r = document.createRange(), s = window.getSelection();
+    r.selectNodeContents(t); r.collapse(false);
+    s.removeAllRanges(); s.addRange(r);
+  }, 30);
 }
 function removeNode(n){
   var f = find(n.id); if(!f) return;
-  if(f.list.length === 1 && !f.parent && !n.kids.length) return;   /* 마지막 한 줄은 남긴다 */
-  var goTo = null;
-  if(f.i > 0){ var p = f.list[f.i - 1]; goTo = lastOpen(p); }
-  else if(f.parent) goTo = f.parent.id;
-  else if(f.list[f.i + 1]) goTo = f.list[f.i + 1].id;
-  /* 안에 있던 것은 버리지 않고 그 자리로 올린다 */
-  var args = [f.i, 1].concat(n.kids);
-  f.list.splice.apply(f.list, args);
-  save(); render();
-  if(goTo) caretTo(goTo, "end"); else if(PJ.roots[0]) caretTo(PJ.roots[0].id, "end");
-}
-function lastOpen(n){
-  if(n.fold || !n.kids.length) return n.id;
-  return lastOpen(n.kids[n.kids.length - 1]);
-}
-/* 눈에 보이는 순서 그대로 위아래로 옮겨 다닌다 */
-function visible(){
-  var out = [];
-  (function dive(list){
-    list.forEach(function(n){ out.push(n); if(n.kids.length && !n.fold) dive(n.kids); });
-  })(PJ.roots);
-  return out;
-}
-function step(n, dir){
-  var v = visible(), i = -1;
-  v.forEach(function(x, k){ if(x.id === n.id) i = k; });
-  var t = v[i + dir];
-  if(t) caretTo(t.id, "end");
+  var inside = all(n.kids).length;
+  dlg({ title:"「" + (n.name || "이름 없음") + "」 지우기",
+        desc: inside ? ("안에 있던 " + inside + "개는 버리지 않고 이 자리로 올라옵니다.") : "되돌릴 수 없습니다.",
+        yes:"지우기",
+        run:function(){
+          var f2 = find(n.id); if(!f2) return;
+          var args = [f2.i, 1].concat(n.kids);
+          f2.list.splice.apply(f2.list, args);
+          if(FOCUS === n.id) FOCUS = f2.parent ? f2.parent.id : null;
+          SEL = null; save(); draw();
+        } });
 }
 
-function onKey(e, n, field){
-  var meta = e.ctrlKey || e.metaKey;
+/* ------------------------------ 끌어서 옮기기 ------------------------------
+   재우가 8/21에 요구한 것 — "가장 큰 상위 카테고리를 아래 카테고리로 자유롭게 움직일 수 있게끔.
+   반대도 마찬가지." 즉 좌표를 옮기는 게 아니라 «위계»를 옮기는 것이다.
+   품는 구조라서 아래 달린 것은 통째로 따라오고, 끊길 선이 없다. */
+var DRAG = null;
+function markSel(){
+  PLACED.forEach(function(p){
+    if(p.el && p.el.classList) p.el.classList.toggle("sel", p.node.id === SEL);
+  });
+}
+function bindDrag(el, node){
+  el.addEventListener("mousedown", function(e){
+    if(e.button !== 0) return;
+    if(e.target.closest("button")) return;
+    if(e.target.classList.contains("dot")) return;      /* 동그라미는 상태 바꾸기다 */
 
-  if(e.key === "Enter" && meta){ e.preventDefault(); cycle(n); return; }
-  if(e.key === "Enter" && e.shiftKey){
+    /* 이름 위에서 눌러도 끌 수 있어야 한다. 상자 머리의 대부분이 이름이라
+       이름을 빼면 끌 곳이 거의 없다.
+       누르고 «안 움직이면» 글자 편집, «움직이면» 옮기기로 갈라진다.
+
+       이미 그 글자를 고치고 있는 중이면 손대지 않는다 — 그때는 글자를 끌어 고르는 게 맞다. */
+    var fromText = !!e.target.isContentEditable;
+    if(fromText && document.activeElement === e.target) return;
+    /* 항상 막는다. 안 막으면 브라우저가 글자를 끌기 시작해서 마우스 신호를 가로챈다 */
     e.preventDefault();
-    if(field === "name") caretTo(n.id, "end", "note");
-    else caretTo(n.id, "end", "name");
+    SEL = node.id; markSel();
+    DRAG = { node:node, x0:e.clientX, y0:e.clientY, el:el, moved:false,
+             fromText:fromText, textEl:fromText ? e.target : null };
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  });
+}
+function onMove(e){
+  if(!DRAG) return;
+  if(!DRAG.moved){
+    if(Math.abs(e.clientX-DRAG.x0) + Math.abs(e.clientY-DRAG.y0) < 5) return;
+    DRAG.moved = true;
+    DRAG.el.classList.add("drag");
+    if(DRAG.fromText){                                   /* 글자 선택이 끌기를 방해하지 않게 */
+      try{ if(document.activeElement) document.activeElement.blur(); }catch(err){}
+      var s = window.getSelection(); if(s) s.removeAllRanges();
+    }
+  }
+  e.preventDefault();
+  document.querySelectorAll(".drop").forEach(function(x){ x.classList.remove("drop"); });
+  DRAG.target = null; DRAG.up = null; DRAG.upSet = false;
+
+  var over = document.elementFromPoint(e.clientX, e.clientY);
+  var pb = over && over.closest ? over.closest("#path button") : null;
+  if(pb){                                   /* 주소줄에 올리면 그 층으로 꺼낸다 */
+    pb.classList.add("drop");
+    DRAG.upSet = true;
+    DRAG.up = pb.dataset.nid || null;
     return;
   }
-  if(e.key === "Enter"){ e.preventDefault(); addAfter(n); return; }
-
-  if(e.key === "Tab"){
-    e.preventDefault();
-    if(e.shiftKey) outdent(n); else indent(n);
+  var t = hit(e.clientX, e.clientY);
+  if(t && t.el) t.el.classList.add("drop");
+  DRAG.target = t;
+}
+function onUp(){
+  document.removeEventListener("mousemove", onMove);
+  document.removeEventListener("mouseup", onUp);
+  document.querySelectorAll(".drop").forEach(function(x){ x.classList.remove("drop"); });
+  var d = DRAG; DRAG = null;
+  if(!d) return;
+  d.el.classList.remove("drag");
+  /* 안 움직였으면 아무것도 안 바뀐 것이다.
+     여기서 다시 그리면 눌린 요소가 사라져서 클릭이 씹힌다(상태 동그라미가 그랬다). */
+  if(!d.moved){
+    markSel();
+    if(d.textEl){                       /* 누르기만 했으면 글자를 고치러 들어간다 */
+      d.textEl.focus();
+      try{
+        var r = document.caretRangeFromPoint ? document.caretRangeFromPoint(d.x0, d.y0) : null;
+        var s = window.getSelection();
+        if(r && d.textEl.contains(r.startContainer)){ s.removeAllRanges(); s.addRange(r); }
+      }catch(err){}
+    }
     return;
   }
-  if(e.altKey && e.key === "ArrowUp"){ e.preventDefault(); moveUp(n); return; }
-  if(e.altKey && e.key === "ArrowDown"){ e.preventDefault(); moveDown(n); return; }
 
-  if(e.key === "ArrowUp" && !e.altKey){ e.preventDefault(); step(n, -1); return; }
-  if(e.key === "ArrowDown" && !e.altKey){ e.preventDefault(); step(n, +1); return; }
+  var f = find(d.node.id); if(!f) return;
 
-  if(e.key === "Backspace" && field === "name" && !n.name && atStart()){
-    e.preventDefault(); removeNode(n); return;
+  /* 주소줄에 떨궜다 — 그 층으로 꺼낸다 */
+
+  if(d.upSet){
+    var dest = d.up ? find(d.up) : null;
+    if(dest && (dest.node.id === d.node.id || isInside(d.node, dest.node.id))){ toast("자기 안으로는 못 넣습니다."); draw(); return; }
+    f.list.splice(f.i, 1);
+    if(dest) dest.node.kids.push(d.node); else roots().push(d.node);
+    save(); draw();
+    toast(dest ? ("「" + (dest.node.name || "이름 없음") + "」 층으로 꺼냈습니다.") : "맨 바깥으로 꺼냈습니다.");
+    return;
   }
-  if(e.key === "Escape"){ e.preventDefault(); e.target.blur(); }
+
+  var tgt = d.target;
+  var into = tgt ? tgt.node : null;
+  if(into && (into.id === d.node.id || isInside(d.node, into.id))){ toast("자기 안으로는 못 넣습니다."); draw(); return; }
+
+  f.list.splice(f.i, 1);                       /* 아래 달린 것은 통째로 따라온다 */
+  if(into){ into.kids.push(d.node); }
+  else{ var host = FOCUS ? find(FOCUS).node.kids : roots(); host.push(d.node); }
+  save(); draw();
+  toast(into ? ("「" + (into.name || "이름 없음") + "」 안으로 옮겼습니다.") : "이 층에 두었습니다.");
 }
-function atStart(){
-  var s = window.getSelection();
-  return s && s.isCollapsed && s.anchorOffset === 0;
+/* 커서 밑에 있는 가장 안쪽 상자 */
+function hit(cx, cy){
+  var st = document.getElementById("stage").getBoundingClientRect();
+  var x = cx - st.left - 16, y = cy - st.top - 16;
+  var best = null;
+  PLACED.forEach(function(p){
+    if(p.mode === "pip") return;
+    if(!DRAG) return;
+    if(p.node.id === DRAG.node.id) return;
+    if(isInside(DRAG.node, p.node.id)) return;      /* 자기 안으로는 못 넣는다. 미리 안 비춘다 */
+    if(x >= p.x && x <= p.x + p.w && y >= p.y && y <= p.y + p.h){
+      if(!best || p.depth > best.depth) best = p;
+    }
+  });
+  return best;
 }
+
+/* ------------------------------ 빈 곳 · 단축키 ------------------------------ */
+document.getElementById("stage").addEventListener("mousedown", function(e){
+  if(e.target.id !== "stage" && e.target.id !== "canvas" && !e.target.classList.contains("empty")) return;
+  e.preventDefault();
+  SEL = null;
+  addKid(FOCUS);
+});
+document.addEventListener("keydown", function(e){
+  if(document.getElementById("dlg").classList.contains("on")){
+    if(e.key === "Escape") dlgClose();
+    return;
+  }
+  if(document.body.dataset.at !== "board") return;
+  var edit = document.activeElement && document.activeElement.isContentEditable;
+  if(e.key === "Escape"){
+    if(edit){ document.activeElement.blur(); return; }
+    if(FOCUS){ var ch = chainTo(FOCUS); FOCUS = ch.length ? ch[ch.length-1].id : null; draw(); }
+    return;
+  }
+  if(edit) return;
+  if((e.key === "Delete" || e.key === "Backspace") && SEL){
+    e.preventDefault();
+    var f = find(SEL); if(f) removeNode(f.node);
+  }
+});
+var rz;
+window.addEventListener("resize", function(){
+  clearTimeout(rz);
+  rz = setTimeout(function(){ if(document.body.dataset.at === "board" && PJ) layout(); }, 120);
+});
 
 /* =========================================================================
-   겹창
+   겹창 · 백업 · 가져오기
    ========================================================================= */
 var DLG = null;
 function dlg(o){
   DLG = o;
   document.getElementById("dTitle").textContent = o.title || "";
   document.getElementById("dDesc").textContent = o.desc || "";
-  var bd = document.getElementById("dBody");
-  bd.innerHTML = "";
+  var bd = document.getElementById("dBody"); bd.innerHTML = "";
   if(o.html) bd.innerHTML = o.html;
   if(o.input){
     var ta = document.createElement("textarea");
@@ -734,7 +860,6 @@ function dlg(o){
   var yes = document.getElementById("dYes");
   yes.textContent = o.yes || "확인";
   yes.classList.toggle("hidden", o.yes === false);
-  document.getElementById("dNo").textContent = o.no || "닫기";
   document.getElementById("dlg").classList.add("on");
   document.getElementById("scrim").classList.add("on");
   if(o.input) setTimeout(function(){ var t = document.getElementById("dTa"); t.focus(); if(o.readonly) t.select(); }, 50);
@@ -755,10 +880,6 @@ function copy(t){
   if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).catch(fb);
   else fb();
 }
-
-/* =========================================================================
-   첫 판에서 가져오기 — 읽기만 한다
-   ========================================================================= */
 function readOld(){
   try{
     var s = localStorage.getItem(OLDKEY);
@@ -768,42 +889,34 @@ function readOld(){
   }catch(e){ return null; }
 }
 function importOld(){
-  var old = readOld();
-  if(!old) return 0;
+  var old = readOld(); if(!old) return 0;
   var n = 0;
-  (old.projects || []).forEach(function(op){
-    var byId = {}, roots = [];
-    (op.nodes || []).forEach(function(o){
-      /* 상태 넷을 셋으로 옮긴다. 「만드는 중」은 아직 만들어진 게 아니므로 「정했음」이다 */
-      var st = o.status === "done" ? "made"
-             : (o.status === "set" || o.status === "doing") ? "set" : "think";
+  (old.projects||[]).forEach(function(op){
+    var by = {}, rs = [];
+    (op.nodes||[]).forEach(function(o){
+      /* 넷을 셋으로. 「만드는 중」은 아직 만들어진 게 아니므로 「정했음」이다 */
+      var st = o.status === "done" ? "made" : (o.status === "set" || o.status === "doing") ? "set" : "think";
       var lines = [];
-      (o.what ? [o.what] : []).forEach(function(t){ lines.push(t); });
-      (o.decided || []).forEach(function(t){ lines.push("· " + t); });
-      (o.open || []).forEach(function(t){ lines.push("? " + t); });   /* 하나도 안 버린다 */
-      byId[o.id] = { id:o.id, name:o.name || "", state:st, note:lines.join("\n"), kids:[], fold:false };
+      if(o.what) lines.push(o.what);
+      (o.decided||[]).forEach(function(t){ lines.push("· " + t); });
+      (o.open||[]).forEach(function(t){ lines.push("? " + t); });    /* 하나도 안 버린다 */
+      by[o.id] = { id:o.id, name:o.name||"", state:st, note:lines.join("\n"), kids:[] };
     });
-    (op.nodes || []).forEach(function(o){
-      var me = byId[o.id];
-      if(o.parent && byId[o.parent]) byId[o.parent].kids.push(me);
-      else roots.push(me);
+    (op.nodes||[]).forEach(function(o){
+      var me = by[o.id];
+      if(o.parent && by[o.parent]) by[o.parent].kids.push(me); else rs.push(me);
     });
-    /* 열자마자 전부 펼쳐져 있으면 「전체가 대략 어떻게 구성되어 있는지」가 안 보인다.
-       접어두고, 보고 싶은 곳만 펼치게 한다. 접혀 있어도 안에 뭐가 있는지는 요약으로 보인다. */
-    (function foldAll(list){
-      list.forEach(function(n){ if(n.kids.length){ n.fold = true; foldAll(n.kids); } });
-    })(roots);
-    var origin = [];
-    if(op.what) origin.push(op.what);
-    (op.open || []).forEach(function(t){ origin.push("? " + t); });
-    APP.projects.push(stampPj({ title:op.title, origin:origin.join("\n"), roots:roots,
+    var org = [];
+    if(op.what) org.push(op.what);
+    (op.open||[]).forEach(function(t){ org.push("? " + t); });
+    APP.projects.push(stampPj({ title:op.title, origin:org.join("\n"), roots:rs,
                                 createdAt:op.createdAt, updatedAt:op.updatedAt }));
     n++;
   });
-  (old.ideas || []).forEach(function(oi){
+  (old.ideas||[]).forEach(function(oi){
     var body = [oi.text || ""];
-    (oi.notes || []).forEach(function(x){ body.push(typeof x === "string" ? x : (x && (x.t || x.text) || "")); });
-    (oi.open || []).forEach(function(t){ body.push("? " + t); });
+    (oi.notes||[]).forEach(function(x){ body.push(typeof x === "string" ? x : (x && (x.t||x.text) || "")); });
+    (oi.open||[]).forEach(function(t){ body.push("? " + t); });
     var text = body.filter(Boolean).join("\n");
     APP.projects.push(stampPj({ title:oi.title || "쪽지", origin:text, roots:fromText(text) }));
     n++;
@@ -812,48 +925,31 @@ function importOld(){
   return n;
 }
 
-/* =========================================================================
-   이벤트
-   ========================================================================= */
 function on(id, ev, fn){ var e = document.getElementById(id); if(e) e.addEventListener(ev, fn); }
-
 on("jotGo","click", function(){
   var ta = document.getElementById("jotIn"), t = ta.value.trim();
   if(!t){ toast("먼저 뭐라도 적어보세요."); return; }
-  var roots = fromText(t);
-  var p = stampPj({ title: roots.length ? roots[0].name : t.split("\n")[0], origin:t, roots:roots });
+  var rs = fromText(t);
+  var p = stampPj({ title: rs.length ? rs[0].name : t.split("\n")[0], origin:t, roots:rs });
   APP.projects.push(p); save(false); ta.value = "";
-  open(p.id, true);
-  toast("꺼내놨습니다. 이제 보면서 고치세요.");
+  open(p.id); toast("펼쳐놨습니다. 이제 보면서 고치세요.");
 });
-on("jotIn","keydown", function(e){ if(e.key === "Enter" && (e.ctrlKey || e.metaKey)) document.getElementById("jotGo").click(); });
-
-on("toList","click", function(){ PJ = null; renderList(); go("list"); });
-on("pjTitle","input", function(e){ if(PJ){ PJ.title = e.target.textContent || "이름 없는 것"; save(); } });
-on("pjTitle","keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); e.target.blur(); } });
-
+on("jotIn","keydown", function(e){ if(e.key === "Enter" && (e.ctrlKey||e.metaKey)) document.getElementById("jotGo").click(); });
+on("toList","click", function(){ PJ = null; FOCUS = null; renderList(); go("list"); });
 on("btnOrigin","click", function(){
   if(!PJ) return;
+  var esc = (PJ.origin || "").replace(/[<>&]/g, function(c){ return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c]; });
   dlg({ title:"처음 적은 글",
         desc:"「처음에 내가 뭐라고 생각했지?」 하고 돌아볼 때 보는 것입니다.\n지금 구조와 달라도 괜찮습니다. 생각은 바뀝니다.",
-        html:'<div class="origin">' + (PJ.origin ? PJ.origin.replace(/[<>&]/g, function(c){ return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c]; }) : "(없습니다)") + "</div>",
-        yes:false });
-});
-on("btnAll","click", function(){
-  if(!PJ) return;
-  var anyFold = false;
-  walk(PJ.roots, function(n){ if(n.fold) anyFold = true; });
-  walk(PJ.roots, function(n){ if(n.kids.length) n.fold = !anyFold; });
-  document.getElementById("btnAll").textContent = anyFold ? "모두 접기" : "모두 펼치기";
-  save(false); render();
+        html:'<div class="origin">' + (esc || "(없습니다)") + "</div>", yes:false });
 });
 on("btnImport","click", function(){
   var old = readOld();
   if(!old){ toast("첫 판에 저장된 내용이 없습니다."); return; }
   dlg({ title:"첫 판에서 가져오기",
-        desc:"첫 판(설계도 캔버스)에 프로젝트 " + (old.projects||[]).length + "개, 아이디어 " + (old.ideas||[]).length + "개가 있습니다.\n\n" +
+        desc:"첫 판에 프로젝트 " + (old.projects||[]).length + "개, 아이디어 " + (old.ideas||[]).length + "개가 있습니다.\n\n" +
              "여기로 복사해옵니다. 첫 판 내용은 그대로 남습니다 — 읽기만 합니다.\n" +
-             "적어두신 「정해진 것」과 「아직 안 정한 것」은 하나도 안 버리고 생각 칸으로 옮깁니다.",
+             "적어두신 「정해진 것」과 「아직 안 정한 것」은 하나도 안 버립니다.",
         yes:"가져오기",
         run:function(){ var n = importOld(); renderList(); toast(n + "개를 가져왔습니다. 첫 판은 그대로 있습니다."); } });
 });
@@ -873,31 +969,14 @@ on("btnRestore","click", function(){
           }catch(e){ toast("되살리지 못했습니다 — " + e.message); }
         } });
 });
-
 on("dNo","click", dlgClose);
 on("scrim","click", dlgClose);
 on("dYes","click", function(){
-  var o = DLG, ta = document.getElementById("dTa");
-  var v = ta ? ta.value : "";
+  var o = DLG, ta = document.getElementById("dTa"), v = ta ? ta.value : "";
   dlgClose(); if(o && o.run) o.run(v);
 });
-document.addEventListener("keydown", function(e){
-  if(e.key === "Escape" && document.getElementById("dlg").classList.contains("on")) dlgClose();
-});
-/* 빈 곳을 누르면 맨 아래에 이어 쓴다 */
-document.getElementById("sheet").addEventListener("mousedown", function(e){
-  if(e.target !== this && e.target.id !== "inner") return;
-  e.preventDefault();
-  if(!PJ || !PJ.roots.length) return;
-  var last = PJ.roots[PJ.roots.length - 1];
-  if(last.name.trim() === "" && !last.kids.length){ caretTo(last.id, "end"); return; }
-  var fresh = mkNode("", "think");
-  PJ.roots.push(fresh); save(); render(); caretTo(fresh.id, "end");
-});
 
-/* =========================================================================
-   시작
-   ========================================================================= */
+/* ================================ 시작 ================================ */
 APP = load();
 if(!APP){
   APP = { projects:[] };
